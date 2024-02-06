@@ -12,8 +12,10 @@ public class AccuweatherDataRetrieval {
 
     public static void main(String[] args) {
 
-        String postmanQueryCityUrl = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey=&q=tallinn";
-        String postmanQueryCityWeatherUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/127964?apikey=";
+        String apiKey = System.getenv("API_KEY");
+
+        String postmanQueryCityUrl = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey=" + apiKey + "&q=tallinn";
+        String postmanQueryCityWeatherUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/127964?apikey=" + apiKey;
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet getRequest = new HttpGet(postmanQueryCityWeatherUrl);
