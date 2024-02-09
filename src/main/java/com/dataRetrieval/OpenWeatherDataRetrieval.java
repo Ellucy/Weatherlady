@@ -18,11 +18,12 @@ import java.util.Scanner;
 public class OpenWeatherDataRetrieval {
 
     private static Scanner scanner = new Scanner(System.in);
-    private static String city = scanner.nextLine();
+
 
     public static void main(String[] args) {
+        System.out.println("Enter city name");
+        String city = scanner.nextLine();
         try {
-
 
             String jsonData = OpenWeatherAPI.getWeatherData(city);
             System.out.println(jsonData);
@@ -32,15 +33,13 @@ public class OpenWeatherDataRetrieval {
             float temperature = jsonObject.getJSONObject("main").getFloat("temp");
             float humidity = jsonObject.getJSONObject("main").getFloat("humidity");
             float windSpeed = jsonObject.getJSONObject("wind").getFloat("speed");
-            Database.insertWeatherData(longitude, latitude,city, temperature, humidity, windSpeed);
-            System.out.println("Weather data inserted successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }
    }
 }
 class OpenWeatherAPI {
-    private static final String API_KEY = "your api key";
+    private static final String API_KEY = "93853d6652c1788783d7471059c2cad0";
     private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s";
 
     //Create a client to get data form OpenWeather ----> return ENTITY
@@ -51,28 +50,5 @@ class OpenWeatherAPI {
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity entity = response.getEntity();
         return EntityUtils.toString(entity);
-    }
-}
-
-class Database {
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/weather_db";
-    private static final String JDBC_USER = "username";
-    private static final String JDBC_PASSWORD = "password";
-
-  public static void insertWeatherData(float longitude, float latitude, String city, float temperature, float humidity, float windSpeed) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)) {
-            String sql = "INSERT INTO weather (longitude, latitude,city, temperature, humidity, windSpeed) VALUES (?,?,?, ?, ?, ?)";
-            try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                 statement.setFloat(1, longitude);
-                statement.setFloat(2, latitude);
-                statement.setString(3, city);
-                statement.setFloat(4, temperature);
-                statement.setFloat(5, humidity);
-                statement.setFloat(6, windSpeed);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }
