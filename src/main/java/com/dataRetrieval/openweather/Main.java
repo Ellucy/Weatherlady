@@ -15,7 +15,6 @@ public class Main {
         try {
 
             String jsonData = ClientOpenweather.getWeatherData(cityName);
-
             JSONObject jsonObject = new JSONObject(jsonData);
             String country = jsonObject.getJSONObject("sys").getString("country");
             double latitude = jsonObject.getJSONObject("coord").getDouble("lat");
@@ -24,7 +23,6 @@ public class Main {
             int pressure = jsonObject.getJSONObject("main").getInt("pressure");
             int humidity = jsonObject.getJSONObject("main").getInt("humidity");
             double windSpeed = jsonObject.getJSONObject("wind").getDouble("speed");
-
 
             WeatherOpenweather weatherOpenweather = new WeatherOpenweather();
             weatherOpenweather.setCountry(country);
