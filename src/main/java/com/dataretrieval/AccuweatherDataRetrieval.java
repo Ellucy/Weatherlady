@@ -1,6 +1,6 @@
 package com.dataretrieval;
 
-import com.entities.Weather;
+import com.entities.WeatherAccuweather;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 public class AccuweatherDataRetrieval {
 
@@ -24,7 +23,7 @@ public class AccuweatherDataRetrieval {
 
     static {
         sessionFactory = new Configuration().configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Weather.class)
+                .addAnnotatedClass(WeatherAccuweather.class)
                 .buildSessionFactory();
     }
 
@@ -94,7 +93,7 @@ public class AccuweatherDataRetrieval {
                 Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
 
                 // Create Weather entity
-                Weather weather = new Weather();
+                WeatherAccuweather weather = new WeatherAccuweather();
                 weather.setCountryName(locationDetails.getCountryName());
                 weather.setRegionName(locationDetails.getRegionName());
                 weather.setCityName(locationDetails.getCityName());
@@ -116,10 +115,11 @@ public class AccuweatherDataRetrieval {
         }
     }
 
-    private static void saveWeatherData(Weather weather) {
+    private static void saveWeatherData(WeatherAccuweather weather) {
+
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            Weather managedWeather = (Weather) session.merge(weather);
+            WeatherAccuweather managedWeather = (WeatherAccuweather) session.merge(weather);
             session.merge(managedWeather);
 
             transaction.commit();
