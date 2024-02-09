@@ -2,7 +2,7 @@ package com.weather;
 
 import org.junit.Test;
 
-public class WeatherApplicationTest {
+public class WeatherAccuweatherApplicationTest {
 
     @Test
     public void testMain() {
