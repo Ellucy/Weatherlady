@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -18,8 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Table(name= "weather")
-public class Weather {
+@Table(name= "weatherweatherstack")
+public class WeatherWeatherstack {
 
     @Id
     @GeneratedValue

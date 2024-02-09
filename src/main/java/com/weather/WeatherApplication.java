@@ -1,7 +1,7 @@
 package com.weather;
 
 import com.entities.Location;
-import com.entities.Weather;
+import com.entities.WeatherAccuweather;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -16,7 +16,7 @@ public class WeatherApplication {
     static {
         sessionFactory = new Configuration().configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Location.class)
-                .addAnnotatedClass(Weather.class)
+                .addAnnotatedClass(WeatherAccuweather.class)
                 .buildSessionFactory();
     }
 
