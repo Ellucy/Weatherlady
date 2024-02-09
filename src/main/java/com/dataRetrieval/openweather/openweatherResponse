@@ -12,11 +12,26 @@
     }
  ],
     "base":"stations",
-    "main":{"temp":264.38,"feels_like":257.98,"temp_min":264.34,"temp_max":265.21,"pressure":1010,"humidity":67},
+    "main":
+    {
+    "temp":264.38,
+    "feels_like":257.98,
+    "temp_min":264.34,
+    "temp_max":265.21,
+    "pressure":1010,
+    "humidity":67
+    },
     "visibility":10000,
-    "wind":{"speed":4.12,"deg":80},
+    "wind":{
+    "speed":4.12,
+    "deg":80},
     "clouds":{"all":0},"dt":1707484733,
-    "sys":{"type":1,"id":1330,"country":"EE","sunrise":1707459277,"sunset":1707490549},
+    "sys":{
+    "type":1,
+    "id":1330,
+    "country":"EE",
+    "sunrise":1707459277,
+    "sunset":1707490549},
     "timezone":7200,
     "id":588409,
     "name":"Tallinn","cod":200}
