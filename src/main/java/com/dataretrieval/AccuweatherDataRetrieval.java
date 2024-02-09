@@ -31,7 +31,6 @@ public class AccuweatherDataRetrieval {
     public static void main(String[] args) {
 
         String apiKey = System.getenv("AW_API_KEY");
-        System.out.println(apiKey);
 
         try {
             downloadAndSaveWeatherData(apiKey);
@@ -42,9 +41,8 @@ public class AccuweatherDataRetrieval {
 
     private static void downloadAndSaveWeatherData(String apiKey) throws IOException {
 
-        String requestedCity = "Tallinn";
+        String requestedCity = "Paris";
         String transformedInput = requestedCity.toLowerCase().replaceAll("\\s+", "");
-        System.out.println(transformedInput);
 
         LocationDetails locationDetails = AccuweatherLocationHandler.getLocationDetails(apiKey, transformedInput);
 
