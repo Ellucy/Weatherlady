@@ -37,5 +37,6 @@ To clone using SSH, run the following command: ```git clone git@github.com:Elluc
 
 - For WeatherStack: WS_API_KEY
 - For AccuWeather: AW_API_KEY
+- For OpenWeather: OW_API_KEY
 
 #### Under hibernate configuration file update username and password. Create empty database called "weather".
