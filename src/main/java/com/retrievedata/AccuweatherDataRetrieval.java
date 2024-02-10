@@ -8,6 +8,7 @@ import org.hibernate.cfg.Configuration;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -36,7 +37,7 @@ public class AccuweatherDataRetrieval {
 
     private static void downloadAndSaveWeatherData(String apiKey) throws IOException {
 
-        String requestedCity = "Ankara";
+        String requestedCity = "Liverpool";
         String transformedInput = requestedCity.toLowerCase().replaceAll("\\s+", "");
 
         LocationDetails locationDetails = AccuweatherLocationHandler.getLocationDetails(apiKey, transformedInput);
@@ -50,45 +51,51 @@ public class AccuweatherDataRetrieval {
 
             JSONObject jsonResponse = downloadWeatherData(accuweatherOneDayUrl);
 
-                // DailyForecasts data
-                // Information for today, the first day in array (index 0)
-                JSONObject forecast = jsonResponse.getJSONArray("DailyForecasts").getJSONObject(0);
+            // DailyForecasts data
+            // Information for today, the first day in array (index 0)
+            JSONObject forecast = jsonResponse.getJSONArray("DailyForecasts").getJSONObject(0);
 
-                // Temperature data
-                JSONObject temperature = forecast.getJSONObject("Temperature");
-                double minTemp = temperature.getJSONObject("Minimum").getDouble("Value");
-                double maxTemp = temperature.getJSONObject("Maximum").getDouble("Value");
-                double averageTemp = (minTemp + maxTemp) / 2;
+            // Temperature data
+            JSONObject temperature = forecast.getJSONObject("Temperature");
+            double minTemp = temperature.getJSONObject("Minimum").getDouble("Value");
+            double maxTemp = temperature.getJSONObject("Maximum").getDouble("Value");
+            double averageTemp = (minTemp + maxTemp) / 2;
 
-                // Relative humidity data
-                JSONObject relativeHumidity = forecast.getJSONObject("Day").getJSONObject("RelativeHumidity");
-                int averageRH = relativeHumidity.getInt("Average");
+            // Relative humidity data
+            JSONObject relativeHumidity = forecast.getJSONObject("Day").getJSONObject("RelativeHumidity");
+            int averageRH = relativeHumidity.getInt("Average");
 
-                // Wind data
-                JSONObject wind = forecast.getJSONObject("Day").getJSONObject("Wind");
-                double windSpeed = wind.getJSONObject("Speed").getDouble("Value");
-                int windDirectionDegrees = wind.getJSONObject("Direction").getInt("Degrees");
-                String windDirectionLocalized = wind.getJSONObject("Direction").getString("Localized");
+            // Wind data
+            JSONObject wind = forecast.getJSONObject("Day").getJSONObject("Wind");
+            double windSpeed = wind.getJSONObject("Speed").getDouble("Value");
+            int windDirectionDegrees = wind.getJSONObject("Direction").getInt("Degrees");
+            String windDirectionLocalized = wind.getJSONObject("Direction").getString("Localized");
 
-                // Parse and extract date
-                String dateString = forecast.getString("Date");
-                Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+            // Parse and extract date
+            String dateString = forecast.getString("Date");
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
 
-                // Create Weather entity
-                WeatherAccuweather weather = new WeatherAccuweather();
-                weather.setCountryName(locationDetails.getCountryName());
-                weather.setRegionName(locationDetails.getRegionName());
-                weather.setCityName(locationDetails.getCityName());
-                weather.setLatitude(locationDetails.getLatitude());
-                weather.setLongitude(locationDetails.getLongitude());
-                weather.setDate(date);
-                weather.setTemperature(averageTemp);
-                weather.setHumidity(averageRH);
-                weather.setWindDirection(windDirectionLocalized + " (" + windDirectionDegrees + "°)");
-                weather.setWindSpeed(windSpeed);
+            // Create Weather entity
+            WeatherAccuweather weather = new WeatherAccuweather();
+            weather.setCountryName(locationDetails.getCountryName());
+            weather.setRegionName(locationDetails.getRegionName());
+            weather.setCityName(locationDetails.getCityName());
+            weather.setLatitude(locationDetails.getLatitude());
+            weather.setLongitude(locationDetails.getLongitude());
+            weather.setDate(date);
 
-                // Save Weather entity to the database
-                saveWeatherData(weather);
+            // Transform fahrenheit to Celsius ((1°F − 32) × 5/9)
+            double averageTempCelsius = (averageTemp - 32) * 5 / 9;
+            DecimalFormat df = new DecimalFormat("#.##");
+            double roundedTemp = Double.parseDouble(df.format(averageTempCelsius));
+            weather.setTemperature(roundedTemp);
+
+            weather.setHumidity(averageRH);
+            weather.setWindDirection(windDirectionLocalized + " (" + windDirectionDegrees + "°)");
+            weather.setWindSpeed(windSpeed);
+
+            // Save Weather entity to the database
+            saveWeatherData(weather);
         } catch (Exception e) {
             e.printStackTrace();
         }
