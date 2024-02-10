@@ -33,7 +33,6 @@ public class AccuweatherDataRetrieval {
         String locationKey = locationDetails.getLocationKey();
 
         String accuweatherOneDayUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/" + locationKey + "?apikey=" + apiKey + "&details=true";
-        String accuweatherFiveDaysUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/349727?apikey=" + apiKey + "&details=true";
 
         try {
 

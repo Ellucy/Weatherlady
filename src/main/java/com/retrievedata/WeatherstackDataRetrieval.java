@@ -23,21 +23,9 @@ public class WeatherstackDataRetrieval {
                 .buildSessionFactory();
     }
 
-    public static void main(String[] args) {
+    public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
 
-        String apiKey = System.getenv("WS_API_KEY");
-
-        try {
-            downloadAndSaveWeatherData(apiKey);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void downloadAndSaveWeatherData(String apiKey) throws IOException {
-
-        String requestedCity = "Liverpool";
-        String transformedInput = requestedCity.toLowerCase().replaceAll("\\s+", "");
+        String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
 
         String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + apiKey + "&query=" + transformedInput;
 
@@ -75,8 +63,8 @@ public class WeatherstackDataRetrieval {
             weather.setHumidity(humidity);
             weather.setWindDirection(windDirection + " (" + windDegree + "°)");
             weather.setWindSpeed((double) windSpeed);
-            weather.setNaturalDisaster("Volcanic eruption");
-            weather.setDescription("Powerful, VEI 7");
+            weather.setNaturalDisaster(disaster);
+            weather.setDescription(description);
 
             // Save the WeatherWeatherstack object to the database
             saveWeatherData(weather);
@@ -84,7 +72,6 @@ public class WeatherstackDataRetrieval {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private static void saveWeatherData(WeatherWeatherstack weather) {

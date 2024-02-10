@@ -1,9 +1,8 @@
 package com.weather;
 
-import com.entities.WeatherOpenweather;
 import com.retrievedata.AccuweatherDataRetrieval;
 import com.retrievedata.OpenweatherDataRetrieval;
-import com.retrievedata.OpenweatherDatabaseConnection;
+import com.retrievedata.WeatherstackDataRetrieval;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -64,6 +63,8 @@ public class WeatherApplication {
     private static void addNewNaturalDisaster() throws IOException {
 
         String awApiKey = System.getenv("AW_API_KEY");
+        String wsApiKey = System.getenv("WS_API_KEY");
+        String owApiKey = System.getenv("OW_API_KEY");
 
         System.out.println("Enter a city where natural disaster occurred: ");
         String cityName = scanner.nextLine();
@@ -75,10 +76,9 @@ public class WeatherApplication {
         String description = scanner.nextLine();
 
         try {
-//            OpenweatherDataRetrieval.getJsonData(cityName);
-//            OpenweatherDatabaseConnection.insertOpenweatherData(new WeatherOpenweather());
-
+            OpenweatherDataRetrieval.getJsonData(cityName, disaster, description, owApiKey);
             AccuweatherDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, awApiKey);
+            WeatherstackDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, wsApiKey);
         } catch (IOException e) {
             e.printStackTrace();
         }
