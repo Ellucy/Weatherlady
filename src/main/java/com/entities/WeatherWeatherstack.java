@@ -15,7 +15,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Table(name= "weatherweatherstack")
 public class WeatherWeatherstack {
 
@@ -57,4 +56,11 @@ public class WeatherWeatherstack {
 
     @Column(name = "wind_speed")
     private Double windSpeed;
+
+    @NotNull(message = "Disaster cannot be null")
+    @Column(name = "natural_disaster")
+    private String naturalDisaster;
+
+    @Column(name = "description")
+    private String description;
 }

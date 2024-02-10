@@ -8,13 +8,13 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name= "weatheropenweather")
-
 public class WeatherOpenweather {
 
         @Id
@@ -44,7 +44,13 @@ public class WeatherOpenweather {
         @Column(name = "humidity")
         private Integer humidity;
 
-
         @Column(name = "wind_speed")
         private Double windSpeed;
+
+        @NotNull(message = "Disaster cannot be null")
+        @Column(name = "natural_disaster")
+        private String naturalDisaster;
+
+        @Column(name = "description")
+        private String description;
 }

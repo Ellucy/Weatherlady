@@ -83,6 +83,8 @@ public class AccuweatherDataRetrieval {
             weather.setLatitude(locationDetails.getLatitude());
             weather.setLongitude(locationDetails.getLongitude());
             weather.setDate(date);
+            weather.setNaturalDisaster("Volcanic eruption");
+            weather.setDescription("Powerful, VEI 7");
 
             // Transform fahrenheit to Celsius ((1°F − 32) × 5/9)
             double averageTempCelsius = (averageTemp - 32) * 5 / 9;
