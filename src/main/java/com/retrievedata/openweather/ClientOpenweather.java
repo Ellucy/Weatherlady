@@ -1,4 +1,4 @@
-package com.dataretrieval.openweather;
+package com.retrievedata.openweather;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

@@ -1,21 +1,17 @@
-package com.dataretrieval;
+package com.retrievedata;
 
 import com.entities.WeatherAccuweather;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.retrievedata.WeatherData.downloadWeatherData;
 
 public class AccuweatherDataRetrieval {
 
@@ -40,7 +36,7 @@ public class AccuweatherDataRetrieval {
 
     private static void downloadAndSaveWeatherData(String apiKey) throws IOException {
 
-        String requestedCity = "Paris";
+        String requestedCity = "Ankara";
         String transformedInput = requestedCity.toLowerCase().replaceAll("\\s+", "");
 
         LocationDetails locationDetails = AccuweatherLocationHandler.getLocationDetails(apiKey, transformedInput);
@@ -49,24 +45,10 @@ public class AccuweatherDataRetrieval {
 
         String accuweatherOneDayUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/" + locationKey + "?apikey=" + apiKey + "&details=true";
         String accuweatherFiveDaysUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/349727?apikey=" + apiKey + "&details=true";
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpGet getRequest = new HttpGet(accuweatherOneDayUrl);
 
         try {
-            HttpResponse response = httpClient.execute(getRequest);
 
-            System.out.println(response);
-
-            if (response.getStatusLine().getStatusCode() == 200) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                StringBuilder result = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
-                // Parse JSON response
-                JSONObject jsonResponse = new JSONObject(result.toString());
+            JSONObject jsonResponse = downloadWeatherData(accuweatherOneDayUrl);
 
                 // DailyForecasts data
                 // Information for today, the first day in array (index 0)
@@ -107,9 +89,6 @@ public class AccuweatherDataRetrieval {
 
                 // Save Weather entity to the database
                 saveWeatherData(weather);
-            } else {
-                System.err.println("Failed to retrieve data. HTTP Error Code: " + response.getStatusLine().getStatusCode());
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
