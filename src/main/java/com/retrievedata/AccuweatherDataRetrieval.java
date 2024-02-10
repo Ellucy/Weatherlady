@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.retrievedata.WeatherData.downloadWeatherData;
+import static com.retrievedata.APIConnection.downloadWeatherData;
 
 public class AccuweatherDataRetrieval {
 

@@ -10,7 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class WeatherData {
+public class APIConnection {
 
     public static JSONObject downloadWeatherData(String url) throws IOException {
 

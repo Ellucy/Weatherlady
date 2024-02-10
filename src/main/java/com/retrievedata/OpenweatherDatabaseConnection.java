@@ -1,4 +1,4 @@
-package com.retrievedata.openweather;
+package com.retrievedata;
 
 
 import com.entities.WeatherOpenweather;
