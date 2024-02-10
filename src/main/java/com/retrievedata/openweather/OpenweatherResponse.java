@@ -6,22 +6,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Main {
+public class OpenweatherResponse {
 
-
-    public static void main(String[] args) throws IOException {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter a city name");
-        String cityName = scanner.nextLine();
+        public void getJsonData(String cityName){
         try {
-
-            String jsonData = ClientOpenweather.getWeatherData(cityName);
+            String jsonData = OpenweatherApiConnection.getWeatherData(cityName);
             JSONObject jsonObject = new JSONObject(jsonData);
             String country = jsonObject.getJSONObject("sys").getString("country");
             double latitude = jsonObject.getJSONObject("coord").getDouble("lat");
             double longitude = jsonObject.getJSONObject("coord").getDouble("lon");
             double temperature = jsonObject.getJSONObject("main").getDouble("temp");
-            temperature = temperature - 273.15;
             int pressure = jsonObject.getJSONObject("main").getInt("pressure");
             int humidity = jsonObject.getJSONObject("main").getInt("humidity");
             double windSpeed = jsonObject.getJSONObject("wind").getDouble("speed");
@@ -38,10 +32,11 @@ public class Main {
             weatherOpenweather.setNaturalDisaster("Volcanic eruption");
             weatherOpenweather.setDescription("Powerful, VEI 7");
 
-            ConnectionToDatabaseOpenweather.insertOpenweatherData(weatherOpenweather);
+            OpenweatherDatabaseConnection.insertOpenweatherData(weatherOpenweather);
             System.out.println("Weather data inserted successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
     }
 }
