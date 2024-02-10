@@ -1,41 +1,34 @@
 package com.weather;
 
-import com.entities.Location;
-import com.entities.WeatherAccuweather;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import com.entities.WeatherOpenweather;
+import com.retrievedata.OpenweatherDataRetrieval;
+import com.retrievedata.OpenweatherDatabaseConnection;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class WeatherApplication {
 
-    private static final SessionFactory sessionFactory;
-
-    static {
-        sessionFactory = new Configuration().configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Location.class)
-                .addAnnotatedClass(WeatherAccuweather.class)
-                .buildSessionFactory();
-    }
-
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter a city name");
+        String cityName = scanner.nextLine();
 
-        try (Session session = sessionFactory.openSession()) {
-            Scanner scanner = new Scanner(System.in);
+        try  {
+
             while (true) {
                 displayMenu();
                 int choice = scanner.nextInt();
+
                 switch (choice) {
                     case 1:
-                        addLocation(session);
+                        addLocation(cityName);
                         break;
                     case 2:
-                        displayLocations(session);
+                        displayLocations();
                         break;
                     case 3:
-                        downloadWeatherValues(session);
+                        downloadWeatherValues();
                         break;
                     case 4:
                         exitProgram();
@@ -44,6 +37,8 @@ public class WeatherApplication {
                         System.out.println("Please enter a correct number.");
                 }
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -51,7 +46,7 @@ public class WeatherApplication {
         System.out.println("Enter your choice (1/2/3/4): ");
     }
 
-    private static void downloadWeatherValues(Session session) {
+    private static void downloadWeatherValues() {
         System.out.println("Downloading weather values");
     }
 
@@ -60,44 +55,14 @@ public class WeatherApplication {
         System.exit(0);
     }
 
-    private static void displayLocations(Session session) {
+    private static void displayLocations() {
         System.out.println("Displaying locations");
     }
 
-    private static void addLocation(Session session) {
+    private static void addLocation(String cityName) throws IOException {
+        OpenweatherDataRetrieval.getJsonData(cityName);
+        OpenweatherDatabaseConnection.insertOpenweatherData(new WeatherOpenweather());
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter longitude:");
-        double longitude = scanner.nextDouble();
-        System.out.println("Enter latitude:");
-        double latitude = scanner.nextDouble();
-        scanner.nextLine(); // Consume newline
-        System.out.println("Enter city name:");
-        String cityName = scanner.nextLine();
-        System.out.println("Enter region (optional):");
-        String region = scanner.nextLine();
-        System.out.println("Enter country name:");
-        String countryName = scanner.nextLine();
-
-        Location location = new Location();
-        location.setLongitude(longitude);
-        location.setLatitude(latitude);
-        location.setCityName(cityName);
-        location.setRegion(region);
-        location.setCountryName(countryName);
-
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            session.save(location);
-            transaction.commit();
-            System.out.println("Location added successfully!");
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            System.out.println("Failed to add location. Error: " + e.getMessage());
-        }
     }
 
 }

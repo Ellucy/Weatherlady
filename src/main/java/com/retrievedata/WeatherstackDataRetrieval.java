@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Date;
 
-import static com.retrievedata.WeatherData.downloadWeatherData;
+import static com.retrievedata.APIConnection.downloadWeatherData;
 
 public class WeatherstackDataRetrieval {
 
