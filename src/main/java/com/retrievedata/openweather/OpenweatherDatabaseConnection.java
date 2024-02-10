@@ -9,7 +9,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 
-public class ConnectionToDatabaseOpenweather {
+public class OpenweatherDatabaseConnection {
     private static final SessionFactory sessionFactory;
 
     static {
