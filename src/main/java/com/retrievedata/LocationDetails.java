@@ -1,4 +1,4 @@
-package com.dataretrieval;
+package com.retrievedata;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,21 +1,16 @@
-package com.dataretrieval;
+package com.retrievedata;
 
 import com.entities.WeatherWeatherstack;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import org.hibernate.cfg.Configuration;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Date;
+
+import static com.retrievedata.WeatherData.downloadWeatherData;
 
 public class WeatherstackDataRetrieval {
 
@@ -40,29 +35,13 @@ public class WeatherstackDataRetrieval {
 
     private static void downloadAndSaveWeatherData(String apiKey) throws IOException {
 
-        String requestedCity = "Paide";
+        String requestedCity = "California";
         String transformedInput = requestedCity.toLowerCase().replaceAll("\\s+", "");
 
         String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + apiKey + "&query=" + transformedInput;
 
-        // Create an HTTP client and make a GET request to the WeatherStack API
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpGet getRequest = new HttpGet(weatherstackResponse);
-
         try {
-            HttpResponse response = httpClient.execute(getRequest);
-
-            if (response.getStatusLine().getStatusCode() == 200) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                StringBuilder result = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
-                // Parse JSON response
-                JSONObject jsonResponse = new JSONObject(result.toString());
-                System.out.println(jsonResponse);
+            JSONObject jsonResponse = downloadWeatherData(weatherstackResponse);
 
                 // Extracting current weather data
                 JSONObject currentWeather = jsonResponse.getJSONObject("current");
@@ -100,9 +79,9 @@ public class WeatherstackDataRetrieval {
                 saveWeatherData(weather);
 
 
-            } else {
-                System.err.println("Failed to retrieve data. HTTP Error Code: " + response.getStatusLine().getStatusCode());
-            }
+//            } else {
+//                System.err.println("Failed to retrieve data. HTTP Error Code: " + response.getStatusLine().getStatusCode());
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
