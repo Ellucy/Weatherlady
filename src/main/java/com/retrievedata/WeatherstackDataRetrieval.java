@@ -35,7 +35,7 @@ public class WeatherstackDataRetrieval {
 
     private static void downloadAndSaveWeatherData(String apiKey) throws IOException {
 
-        String requestedCity = "California";
+        String requestedCity = "Liverpool";
         String transformedInput = requestedCity.toLowerCase().replaceAll("\\s+", "");
 
         String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + apiKey + "&query=" + transformedInput;
