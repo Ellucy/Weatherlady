@@ -35,6 +35,8 @@ public class Main {
             weatherOpenweather.setPressure(pressure);
             weatherOpenweather.setHumidity(humidity);
             weatherOpenweather.setWindSpeed(windSpeed);
+            weatherOpenweather.setNaturalDisaster("Volcanic eruption");
+            weatherOpenweather.setDescription("Powerful, VEI 7");
 
             ConnectionToDatabaseOpenweather.insertOpenweatherData(weatherOpenweather);
             System.out.println("Weather data inserted successfully.");
