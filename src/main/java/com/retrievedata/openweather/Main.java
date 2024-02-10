@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class Main {
 
+
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter a city name");
@@ -20,6 +21,7 @@ public class Main {
             double latitude = jsonObject.getJSONObject("coord").getDouble("lat");
             double longitude = jsonObject.getJSONObject("coord").getDouble("lon");
             double temperature = jsonObject.getJSONObject("main").getDouble("temp");
+            temperature = temperature - 273.15;
             int pressure = jsonObject.getJSONObject("main").getInt("pressure");
             int humidity = jsonObject.getJSONObject("main").getInt("humidity");
             double windSpeed = jsonObject.getJSONObject("wind").getDouble("speed");
@@ -34,7 +36,7 @@ public class Main {
             weatherOpenweather.setHumidity(humidity);
             weatherOpenweather.setWindSpeed(windSpeed);
 
-            DatabaseOpenweather.insertOpenweatherData(weatherOpenweather);
+            ConnectionToDatabaseOpenweather.insertOpenweatherData(weatherOpenweather);
             System.out.println("Weather data inserted successfully.");
         } catch (Exception e) {
             e.printStackTrace();
