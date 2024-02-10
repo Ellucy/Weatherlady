@@ -24,35 +24,22 @@ public class AccuweatherDataRetrieval {
                 .buildSessionFactory();
     }
 
-    public static void main(String[] args) {
+    public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
 
-        String apiKey = System.getenv("AW_API_KEY");
-
-        try {
-            downloadAndSaveWeatherData(apiKey);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void downloadAndSaveWeatherData(String apiKey) throws IOException {
-
-        String requestedCity = "Liverpool";
-        String transformedInput = requestedCity.toLowerCase().replaceAll("\\s+", "");
+        String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
 
         LocationDetails locationDetails = AccuweatherLocationHandler.getLocationDetails(apiKey, transformedInput);
 
         String locationKey = locationDetails.getLocationKey();
 
         String accuweatherOneDayUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/" + locationKey + "?apikey=" + apiKey + "&details=true";
-        String accuweatherFiveDaysUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/349727?apikey=" + apiKey + "&details=true";
 
         try {
 
             JSONObject jsonResponse = downloadWeatherData(accuweatherOneDayUrl);
 
-            // DailyForecasts data
-            // Information for today, the first day in array (index 0)
+            // DailyForecasts data, Information for current day, the first day in array (index 0)
+            assert jsonResponse != null;
             JSONObject forecast = jsonResponse.getJSONArray("DailyForecasts").getJSONObject(0);
 
             // Temperature data
@@ -83,8 +70,8 @@ public class AccuweatherDataRetrieval {
             weather.setLatitude(locationDetails.getLatitude());
             weather.setLongitude(locationDetails.getLongitude());
             weather.setDate(date);
-            weather.setNaturalDisaster("Volcanic eruption");
-            weather.setDescription("Powerful, VEI 7");
+            weather.setNaturalDisaster(disaster);
+            weather.setDescription(description);
 
             // Transform fahrenheit to Celsius ((1°F − 32) × 5/9)
             double averageTempCelsius = (averageTemp - 32) * 5 / 9;
@@ -107,7 +94,7 @@ public class AccuweatherDataRetrieval {
 
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            WeatherAccuweather managedWeather = (WeatherAccuweather) session.merge(weather);
+            WeatherAccuweather managedWeather = session.merge(weather);
             session.merge(managedWeather);
 
             transaction.commit();

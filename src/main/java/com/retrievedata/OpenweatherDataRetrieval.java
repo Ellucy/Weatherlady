@@ -5,11 +5,11 @@ import org.json.JSONObject;
 
 public class OpenweatherDataRetrieval {
 
-    public static void getJsonData(String cityName) {
-        String API_KEY = System.getenv("OW_API_KEY");
+    public static void getJsonData(String cityName, String disaster, String description, String apiKey) {
+
         String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric";
         try {
-            JSONObject jsonData = APIConnection.downloadWeatherData(String.format(API_URL, cityName, API_KEY));
+            JSONObject jsonData = APIConnection.downloadWeatherData(String.format(API_URL, cityName, apiKey));
             assert jsonData != null;
             String country = jsonData.getJSONObject("sys").getString("country");
             double latitude = jsonData.getJSONObject("coord").getDouble("lat");
@@ -28,6 +28,8 @@ public class OpenweatherDataRetrieval {
             weatherOpenweather.setPressure(pressure);
             weatherOpenweather.setHumidity(humidity);
             weatherOpenweather.setWindSpeed(windSpeed);
+            weatherOpenweather.setNaturalDisaster(disaster);
+            weatherOpenweather.setDescription(description);
 
             OpenweatherDatabaseConnection.insertOpenweatherData(weatherOpenweather);
             System.out.println("Weather data inserted successfully.");
