@@ -1,5 +1,6 @@
 package com.weather;
 
+import com.entities.DataEntity;
 import com.entities.WeatherAccuweather;
 import com.retrievedata.AccuweatherDataRetrieval;
 import com.retrievedata.OpenweatherDataRetrieval;
@@ -110,59 +111,37 @@ public class WeatherApplication {
 
             System.out.println("Disasters details from Openweather");
             for (WeatherOpenweather entity : queryOpenWeather) {
-                System.out.println("Natural Disaster: " + entity.getNaturalDisaster()
-                        + "\nDescription: " + entity.getDescription()
-                        + "\nCountry: " + entity.getCountryName()
-                        + "\nCity Name: " + entity.getCityName()
-                        + "\nLatitude: " + entity.getLatitude()
-                        + "\nLongitude: " + entity.getLongitude()
-                        + "\nDate: " + entity.getDate()
-                        + "\nTemperature: " + entity.getTemperature()
-                        + "\nPressure: " + entity.getPressure()
-                        +"\nHumidity: " + entity.getHumidity()
-                        + "\nWind Direction: " + entity.getWindDirection()
-                        +"\nWind Speed: " + entity.getWindSpeed());
-
+                printFetchedData(entity);
             }
             System.out.println("Disasters details from Accuweather");
             for (WeatherAccuweather entity : queryAccuweather) {
-                System.out.println("Natural Disaster: " + entity.getNaturalDisaster()
-                        + "\nDescription: " + entity.getDescription()
-                        + "\nCountry: " + entity.getCountryName()
-                        + "\nCity Name: " + entity.getCityName()
-                        + "\nLatitude: " + entity.getLatitude()
-                        + "\nLongitude: " + entity.getLongitude()
-                        + "\nDate: " + entity.getDate()
-                        + "\nTemperature: " + entity.getTemperature()
-                        + "\nPressure: " + entity.getPressure()
-                        +"\nHumidity: " + entity.getHumidity()
-                        + "\nWind Direction: " + entity.getWindDirection()
-                        + "\nWind Speed: " + entity.getWindSpeed());
-
+                printFetchedData(entity);
             }
             System.out.println("Disasters details from Weatherstack");
             for (WeatherWeatherstack entity : queryWeatherstack) {
-                System.out.println("Natural Disaster: " + entity.getNaturalDisaster()
-                        + "\nDescription: " + entity.getDescription()
-                        + "\nCountry: " + entity.getCountryName()
-                        + "\nRegion Name: " + entity.getRegionName()
-                        + "\nCity Name: " + entity.getCityName()
-                        + "\nLatitude: " + entity.getLatitude()
-                        + "\nLongitude: " + entity.getLongitude()
-                        + "\nDate: " + entity.getDate()
-                        + "\nTemperature: " + entity.getTemperature()
-                        + "\nPressure: " + entity.getPressure()
-                        +"\nHumidity: " + entity.getHumidity()
-                        + "\nWind Direction: " + entity.getWindDirection()
-                        + "\nWind Speed: " + entity.getWindSpeed());
-
+                printFetchedData(entity);
             }
+
 
             transaction.commit();
             System.out.println("Weather data fetched successfully!");
         } catch (Exception e) {
             System.out.println("Failed to fetch weather data. Error: " + e.getMessage());
         }
+    }
+    private static void printFetchedData(DataEntity entity) {
+        System.out.println("Natural Disaster: " + entity.getNaturalDisaster()
+                + "\nDescription: " + entity.getDescription()
+                + "\nCountry: " + entity.getCountryName()
+                + "\nCity Name: " + entity.getCityName()
+                + "\nLatitude: " + entity.getLatitude()
+                + "\nLongitude: " + entity.getLongitude()
+                + "\nDate: " + entity.getDate()
+                + "\nTemperature: " + entity.getTemperature()
+                + "\nPressure: " + entity.getPressure()
+                + "\nHumidity: " + entity.getHumidity()
+                + "\nWind Speed: " + entity.getWindSpeed()
+                + "\nWind Direction: " + entity.getWindDirection());
     }
 
     private static void viewDisastersByCityName() {
