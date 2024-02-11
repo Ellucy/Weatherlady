@@ -1,26 +1,15 @@
 package com.retrievedata;
 
-
-import com.entities.WeatherAccuweather;
-import com.entities.WeatherOpenweather;
-import com.entities.WeatherWeatherstack;
+import com.weather.SessionFactoryProvider;
 import org.hibernate.Session;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
 
 public class DatabaseConnector {
-    private static final SessionFactory sessionFactory;
 
-    static {
-        sessionFactory = new Configuration().configure("hibernate.cfg.xml")
-                .addAnnotatedClass(WeatherOpenweather.class)
-                .addAnnotatedClass(WeatherAccuweather.class)
-                .addAnnotatedClass(WeatherWeatherstack.class)
-                .buildSessionFactory();
-    }
+    private static final SessionFactory sessionFactory = SessionFactoryProvider.getSessionFactory();
+
     public static <T extends WeatherData> void saveWeatherData(T weatherData) {
 
         try (Session session = sessionFactory.openSession()) {
