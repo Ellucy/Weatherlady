@@ -1,5 +1,6 @@
 package com.entities;
 
+import com.retrievedata.WeatherData;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name= "weatherweatherstack")
-public class WeatherWeatherstack {
+public class WeatherWeatherstack extends WeatherData {
 
     @Id
     @GeneratedValue

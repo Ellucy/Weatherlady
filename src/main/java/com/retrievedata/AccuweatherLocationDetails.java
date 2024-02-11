@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LocationDetails {
+public class AccuweatherLocationDetails {
+
     private String locationKey;
     private String cityName;
     private String regionName;
@@ -13,7 +14,7 @@ public class LocationDetails {
     private double latitude;
     private double longitude;
 
-    public LocationDetails(String locationKey, String cityName, String regionName, String countryName, double latitude, double longitude) {
+    public AccuweatherLocationDetails(String locationKey, String cityName, String regionName, String countryName, double latitude, double longitude) {
         this.locationKey = locationKey;
         this.cityName = cityName;
         this.regionName = regionName;
