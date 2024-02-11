@@ -3,6 +3,8 @@ package com.retrievedata;
 import com.entities.WeatherOpenweather;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 public class OpenweatherDataRetrieval {
 
     public static void getJsonData(String cityName, String disaster, String description, String apiKey) {
@@ -14,9 +16,11 @@ public class OpenweatherDataRetrieval {
             String country = jsonData.getJSONObject("sys").getString("country");
             double latitude = jsonData.getJSONObject("coord").getDouble("lat");
             double longitude = jsonData.getJSONObject("coord").getDouble("lon");
+            int dateString = jsonData.getInt("dt");
             double temperature = jsonData.getJSONObject("main").getDouble("temp");
             int pressure = jsonData.getJSONObject("main").getInt("pressure");
             int humidity = jsonData.getJSONObject("main").getInt("humidity");
+            double windDegree = jsonData.getJSONObject("wind").getDouble("deg");
             double windSpeed = jsonData.getJSONObject("wind").getDouble("speed");
 
             WeatherOpenweather weatherOpenweather = new WeatherOpenweather();
@@ -24,9 +28,12 @@ public class OpenweatherDataRetrieval {
             weatherOpenweather.setCityName(cityName);
             weatherOpenweather.setLatitude(latitude);
             weatherOpenweather.setLongitude(longitude);
+            Date date = new Date(dateString);
+            weatherOpenweather.setDate(date);
             weatherOpenweather.setTemperature(temperature);
             weatherOpenweather.setPressure(pressure);
             weatherOpenweather.setHumidity(humidity);
+            weatherOpenweather.setWindDegree(windDegree + "°");
             weatherOpenweather.setWindSpeed(windSpeed);
             weatherOpenweather.setNaturalDisaster(disaster);
             weatherOpenweather.setDescription(description);

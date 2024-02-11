@@ -1,9 +1,11 @@
 package com.retrievedata;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -19,13 +21,9 @@ public class APIConnection {
         HttpResponse response = httpClient.execute(getRequest);
 
         if (response.getStatusLine().getStatusCode() == 200) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-            StringBuilder result = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                result.append(line);
-            }
-            return new JSONObject(result.toString());
+            HttpEntity entity = response.getEntity();
+            String result = EntityUtils.toString(entity);
+            return new JSONObject(result);
         } else {
             System.err.println("Failed to retrieve data. HTTP Error Code: " + response.getStatusLine().getStatusCode());
             return null;
