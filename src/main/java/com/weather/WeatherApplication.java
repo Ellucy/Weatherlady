@@ -100,11 +100,7 @@ public class WeatherApplication {
 
     private static void viewDisastersByName() {
         System.out.println("Displaying disasters from three different db tables");
-        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml")
-                .addAnnotatedClass(WeatherOpenweather.class)
-                .addAnnotatedClass(WeatherAccuweather.class)
-                .addAnnotatedClass(WeatherWeatherstack.class)
-                .buildSessionFactory();
+
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             System.out.println("Enter disaster name");
@@ -125,8 +121,8 @@ public class WeatherApplication {
                         + "\nTemperature: " + entity.getTemperature()
                         + "\nPressure: " + entity.getPressure()
                         +"\nHumidity: " + entity.getHumidity()
-                        +"\nWind Speed: " + entity.getWindSpeed()
-                        + "\nWind Degree: " + entity.getWindDirection());
+                        + "\nWind Direction: " + entity.getWindDirection()
+                        +"\nWind Speed: " + entity.getWindSpeed());
 
             }
             System.out.println("Disasters details from Accuweather");
@@ -141,7 +137,7 @@ public class WeatherApplication {
                         + "\nTemperature: " + entity.getTemperature()
                         + "\nPressure: " + entity.getPressure()
                         +"\nHumidity: " + entity.getHumidity()
-                        + "\nWind Degree: " + entity.getWindDirection()
+                        + "\nWind Direction: " + entity.getWindDirection()
                         + "\nWind Speed: " + entity.getWindSpeed());
 
             }
@@ -158,7 +154,7 @@ public class WeatherApplication {
                         + "\nTemperature: " + entity.getTemperature()
                         + "\nPressure: " + entity.getPressure()
                         +"\nHumidity: " + entity.getHumidity()
-                        + "\nWind Degree: " + entity.getWindDirection()
+                        + "\nWind Direction: " + entity.getWindDirection()
                         + "\nWind Speed: " + entity.getWindSpeed());
 
             }
