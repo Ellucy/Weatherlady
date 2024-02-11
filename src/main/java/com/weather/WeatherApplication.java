@@ -106,24 +106,16 @@ public class WeatherApplication {
             Transaction transaction = session.beginTransaction();
             System.out.println("Please enter the name of the natural disaster you want to check: ");
             String disasterName = scanner.nextLine();
+            String displayString = disasterName.substring(0, 1).toUpperCase() + disasterName.substring(1).toLowerCase();
+
             List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= '" + disasterName + "'", WeatherOpenweather.class).getResultList();
             List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE naturalDisaster= '" + disasterName + "'", WeatherAccuweather.class).getResultList();
             List<WeatherWeatherstack> queryWeatherstack = session.createQuery("FROM WeatherWeatherstack WHERE naturalDisaster= '" + disasterName + "'", WeatherWeatherstack.class).getResultList();
 
-            String displayString = disasterName.substring(0, 1).toUpperCase() + disasterName.substring(1).toLowerCase();
-            System.out.println(displayString + " cases from Openweather\n");
-            for (WeatherOpenweather entity : queryOpenWeather) {
-                printFetchedData(entity);
-            }
-            System.out.println(displayString + " cases from Accuweather\n");
-            for (WeatherAccuweather entity : queryAccuweather) {
-                printFetchedData(entity);
-            }
-            System.out.println(displayString + " cases from Weatherstack\n");
-            for (WeatherWeatherstack entity : queryWeatherstack) {
-                printFetchedData(entity);
-            }
+            displayDisasters(displayString, queryOpenWeather, queryAccuweather, queryWeatherstack);
+
             System.out.println("Weather data fetched successfully!");
+
         } catch (Exception e) {
             System.out.println("Failed to fetch weather data. Error: " + e.getMessage());
         }
