@@ -18,27 +18,31 @@ public class WeatherApplication {
             while (true) {
 
                 displayMenu();
-                int choice = scanner.nextInt();
-                scanner.nextLine();
 
-                switch (choice) {
-                    case 1:
+                String userInput = scanner.nextLine();
+                if (!userInput.matches("\\d+")) {
+                    System.out.println("Please enter a correct number. (1/2/3/4/5): ");
+                    continue;
+                }
+
+                switch (userInput) {
+                    case "1":
                         addNewNaturalDisaster();
                         break;
-                    case 2:
+                    case "2":
                         viewDisastersByDate();
                         break;
-                    case 3:
+                    case "3":
                         viewDisastersByName();
                         break;
-                    case 4:
+                    case "4":
                         viewDisastersByCityName();
                         break;
-                    case 5:
+                    case "5":
                         exitProgram();
                         break;
                     default:
-                        System.out.println("Please enter a correct number.");
+                        System.out.println("Please enter a correct number: ");
                 }
             }
         } catch (IOException e) {
