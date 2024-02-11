@@ -13,18 +13,18 @@ public class OpenweatherDataRetrieval {
         try {
             JSONObject jsonData = APIConnection.downloadWeatherData(String.format(API_URL, cityName, apiKey));
             assert jsonData != null;
-            String country = jsonData.getJSONObject("sys").getString("country");
+            String countryName = jsonData.getJSONObject("sys").getString("country");
             double latitude = jsonData.getJSONObject("coord").getDouble("lat");
             double longitude = jsonData.getJSONObject("coord").getDouble("lon");
             int dateString = jsonData.getInt("dt");
             double temperature = jsonData.getJSONObject("main").getDouble("temp");
             int pressure = jsonData.getJSONObject("main").getInt("pressure");
             int humidity = jsonData.getJSONObject("main").getInt("humidity");
-            double windDegree = jsonData.getJSONObject("wind").getDouble("deg");
+            double windDirection = jsonData.getJSONObject("wind").getDouble("deg");
             double windSpeed = jsonData.getJSONObject("wind").getDouble("speed");
 
             WeatherOpenweather weatherOpenweather = new WeatherOpenweather();
-            weatherOpenweather.setCountry(country);
+            weatherOpenweather.setCountryName(countryName);
             weatherOpenweather.setCityName(cityName);
             weatherOpenweather.setLatitude(latitude);
             weatherOpenweather.setLongitude(longitude);
@@ -33,7 +33,7 @@ public class OpenweatherDataRetrieval {
             weatherOpenweather.setTemperature(temperature);
             weatherOpenweather.setPressure(pressure);
             weatherOpenweather.setHumidity(humidity);
-            weatherOpenweather.setWindDegree(windDegree + "°");
+            weatherOpenweather.setWindDirection(windDirection + "°");
             weatherOpenweather.setWindSpeed(windSpeed);
             weatherOpenweather.setNaturalDisaster(disaster);
             weatherOpenweather.setDescription(description);
