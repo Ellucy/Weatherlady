@@ -1,15 +1,28 @@
 package com.weather;
 
+import com.entities.WeatherAccuweather;
 import com.retrievedata.AccuweatherDataRetrieval;
 import com.retrievedata.OpenweatherDataRetrieval;
 import com.retrievedata.WeatherstackDataRetrieval;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class WeatherApplication {
 
+    private static final SessionFactory sessionFactory = SessionFactoryProvider.getSessionFactory();
+
     public static Scanner scanner = new Scanner(System.in);
+
+    private static final String awApiKey = System.getenv("AW_API_KEY");
+    private static final String wsApiKey = System.getenv("WS_API_KEY");
+    private static final String owApiKey = System.getenv("OW_API_KEY");
 
     public static void main(String[] args) {
 
@@ -62,10 +75,6 @@ public class WeatherApplication {
 
     private static void addNewNaturalDisaster() throws IOException {
 
-        String awApiKey = System.getenv("AW_API_KEY");
-        String wsApiKey = System.getenv("WS_API_KEY");
-        String owApiKey = System.getenv("OW_API_KEY");
-
         System.out.println("Enter a city where natural disaster occurred: ");
         String cityName = scanner.nextLine();
 
@@ -93,7 +102,14 @@ public class WeatherApplication {
     }
 
     private static void viewDisastersByCityName() {
-        System.out.println("Displaying disasters from three different db tables");
+
+
+        try (Session session = sessionFactory.openSession()) {
+
+
+        } catch (Exception e) {
+            System.out.println("Failed to fetch disaster data by city name. Error: " + e.getMessage());
+        }
     }
 
     private static void exitProgram() {
