@@ -11,9 +11,8 @@ import java.net.URL;
 
 public class AccuweatherLocationHandler {
 
-    public static LocationDetails getLocationDetails(String apiKey, String requestedCity) throws IOException {
+    public static AccuweatherLocationDetails getLocationDetails(String apiKey, String requestedCity) throws IOException {
 
-        //String accuweatherCityUrl = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey=" + apiKey + "&q=" + transformedInput;
         String endpoint = "http://dataservice.accuweather.com/locations/v1/cities/search";
         String params = String.format("apikey=%s&q=%s", apiKey, requestedCity);
         String urlString = String.format("%s?%s", endpoint, params);
@@ -56,7 +55,7 @@ public class AccuweatherLocationHandler {
             System.out.println("Longitude: " + longitude);
 
             // Return location key
-            return new LocationDetails(locationKey, cityName, regionName, countryName, latitude, longitude);
+            return new AccuweatherLocationDetails(locationKey, cityName, regionName, countryName, latitude, longitude);
         } finally {
             connection.disconnect();
         }

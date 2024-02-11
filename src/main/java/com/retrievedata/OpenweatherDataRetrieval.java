@@ -38,7 +38,7 @@ public class OpenweatherDataRetrieval {
             weatherOpenweather.setNaturalDisaster(disaster);
             weatherOpenweather.setDescription(description);
 
-            OpenweatherDatabaseConnection.insertOpenweatherData(weatherOpenweather);
+            DatabaseConnector.saveWeatherData(weatherOpenweather);
             System.out.println("Weather data inserted successfully.");
         } catch (Exception e) {
             e.printStackTrace();

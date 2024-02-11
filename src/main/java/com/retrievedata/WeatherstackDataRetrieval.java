@@ -15,14 +15,6 @@ import static com.retrievedata.APIConnection.downloadWeatherData;
 
 public class WeatherstackDataRetrieval {
 
-    private static final SessionFactory sessionFactory;
-
-    static {
-        sessionFactory = new Configuration().configure("hibernate.cfg.xml")
-                .addAnnotatedClass(WeatherWeatherstack.class)
-                .buildSessionFactory();
-    }
-
     public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
@@ -68,24 +60,9 @@ public class WeatherstackDataRetrieval {
             weather.setDescription(description);
 
             // Save the WeatherWeatherstack object to the database
-            saveWeatherData(weather);
-
+            DatabaseConnector.saveWeatherData(weather);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private static void saveWeatherData(WeatherWeatherstack weather) {
-
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            WeatherWeatherstack managedWeather = session.merge(weather);
-            session.merge(managedWeather);
-
-            transaction.commit();
-            System.out.println("Weather data saved successfully!");
-        } catch (Exception e) {
-            System.out.println("Failed to save weather data. Error: " + e.getMessage());
         }
     }
 }
