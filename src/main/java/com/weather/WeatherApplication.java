@@ -123,8 +123,6 @@ public class WeatherApplication {
             for (WeatherWeatherstack entity : queryWeatherstack) {
                 printFetchedData(entity);
             }
-
-            transaction.commit();
             System.out.println("Weather data fetched successfully!");
         } catch (Exception e) {
             System.out.println("Failed to fetch weather data. Error: " + e.getMessage());
