@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class OpenweatherDataRetrieval {
 
-    public static void getJsonData(String cityName, String disaster, String description, String apiKey) {
+    public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) {
 
         String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric";
         try {

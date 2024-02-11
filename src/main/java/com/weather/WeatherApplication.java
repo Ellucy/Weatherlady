@@ -9,7 +9,6 @@ import org.hibernate.SessionFactory;
 import com.entities.WeatherOpenweather;
 import com.entities.WeatherWeatherstack;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
 import java.io.IOException;
 import java.util.List;
@@ -86,7 +85,7 @@ public class WeatherApplication {
         String description = scanner.nextLine();
 
         try {
-            OpenweatherDataRetrieval.getJsonData(cityName, disaster, description, owApiKey);
+            OpenweatherDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, owApiKey);
             AccuweatherDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, awApiKey);
             WeatherstackDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, wsApiKey);
         } catch (IOException e) {
