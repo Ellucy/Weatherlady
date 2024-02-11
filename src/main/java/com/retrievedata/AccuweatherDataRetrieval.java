@@ -14,7 +14,7 @@ import java.util.Date;
 
 import static com.retrievedata.APIConnection.downloadWeatherData;
 
-public class AccuweatherDataRetrieval extends WeatherData {
+public class AccuweatherDataRetrieval {
 
     public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
 
