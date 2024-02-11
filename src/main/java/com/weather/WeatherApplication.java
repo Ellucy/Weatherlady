@@ -12,6 +12,7 @@ import com.entities.WeatherWeatherstack;
 import org.hibernate.Transaction;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 
@@ -132,10 +133,13 @@ public class WeatherApplication {
 
     private static void printFetchedData(DataEntity entity) {
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = dateFormat.format(entity.getDate());
+
         System.out.println("Event: " + entity.getNaturalDisaster() + " (" + entity.getDescription() + ")"
                 + "\n\tLocation: " + entity.getCityName() + ", " + entity.getCountryName()
                 + " - " + entity.getLatitude() + "° N, " + entity.getLongitude() + "° W"
-                + "\n\tDate: " + entity.getDate()
+                + "\n\tDate: " + formattedDate
                 + "\n\t\tTemperature: " + entity.getTemperature() + "°C"
                 + "\n\t\tPressure: " + entity.getPressure()
                 + "\n\t\tHumidity: " + entity.getHumidity()
