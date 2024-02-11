@@ -68,7 +68,7 @@ public class WeatherApplication {
         System.out.println("Enter your choice:");
         System.out.println("1. Add new natural disaster");
         System.out.println("2. View disasters by date");
-        System.out.println("3. View disasters by name");
+        System.out.println("3. View disasters by disaster name");
         System.out.println("4. View disasters by city name");
         System.out.println("5. Exit program");
         System.out.print("Choice: ");
@@ -99,29 +99,29 @@ public class WeatherApplication {
     }
 
     private static void viewDisastersByName() {
-        System.out.println("Displaying disasters from three different db tables");
 
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            System.out.println("Enter disaster name");
-            String disasterName = scanner.nextLine();
-            List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= '" + disasterName +"'", WeatherOpenweather.class).getResultList();
-            List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE naturalDisaster= '" + disasterName +"'", WeatherAccuweather.class).getResultList();
-            List<WeatherWeatherstack> queryWeatherstack = session.createQuery("FROM WeatherWeatherstack WHERE naturalDisaster= '" + disasterName +"'", WeatherWeatherstack.class).getResultList();
 
-            System.out.println("Disasters details from Openweather");
+            Transaction transaction = session.beginTransaction();
+            System.out.println("Please enter the name of the natural disaster you want to check: ");
+            String disasterName = scanner.nextLine();
+            List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= '" + disasterName + "'", WeatherOpenweather.class).getResultList();
+            List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE naturalDisaster= '" + disasterName + "'", WeatherAccuweather.class).getResultList();
+            List<WeatherWeatherstack> queryWeatherstack = session.createQuery("FROM WeatherWeatherstack WHERE naturalDisaster= '" + disasterName + "'", WeatherWeatherstack.class).getResultList();
+
+            String displayString = disasterName.substring(0, 1).toUpperCase() + disasterName.substring(1).toLowerCase();
+            System.out.println(displayString + " cases from Openweather\n");
             for (WeatherOpenweather entity : queryOpenWeather) {
                 printFetchedData(entity);
             }
-            System.out.println("Disasters details from Accuweather");
+            System.out.println(displayString + " cases from Accuweather\n");
             for (WeatherAccuweather entity : queryAccuweather) {
                 printFetchedData(entity);
             }
-            System.out.println("Disasters details from Weatherstack");
+            System.out.println(displayString + " cases from Weatherstack\n");
             for (WeatherWeatherstack entity : queryWeatherstack) {
                 printFetchedData(entity);
             }
-
 
             transaction.commit();
             System.out.println("Weather data fetched successfully!");
@@ -129,19 +129,18 @@ public class WeatherApplication {
             System.out.println("Failed to fetch weather data. Error: " + e.getMessage());
         }
     }
+
     private static void printFetchedData(DataEntity entity) {
-        System.out.println("Natural Disaster: " + entity.getNaturalDisaster()
-                + "\nDescription: " + entity.getDescription()
-                + "\nCountry: " + entity.getCountryName()
-                + "\nCity Name: " + entity.getCityName()
-                + "\nLatitude: " + entity.getLatitude()
-                + "\nLongitude: " + entity.getLongitude()
-                + "\nDate: " + entity.getDate()
-                + "\nTemperature: " + entity.getTemperature()
-                + "\nPressure: " + entity.getPressure()
-                + "\nHumidity: " + entity.getHumidity()
-                + "\nWind Speed: " + entity.getWindSpeed()
-                + "\nWind Direction: " + entity.getWindDirection());
+
+        System.out.println("Event: " + entity.getNaturalDisaster() + " (" + entity.getDescription() + ")"
+                + "\n\tLocation: " + entity.getCityName() + ", " + entity.getCountryName()
+                + " - " + entity.getLatitude() + "° N, " + entity.getLongitude() + "° W"
+                + "\n\tDate: " + entity.getDate()
+                + "\n\t\tTemperature: " + entity.getTemperature() + "°C"
+                + "\n\t\tPressure: " + entity.getPressure()
+                + "\n\t\tHumidity: " + entity.getHumidity()
+                + "\n\t\tWind: Speed: " + entity.getWindSpeed() + ", Direction: " + entity.getWindDirection()
+                + "\n");
     }
 
     private static void viewDisastersByCityName() {
