@@ -18,24 +18,31 @@ public class WeatherApplication {
             while (true) {
 
                 displayMenu();
-                int choice = scanner.nextInt();
-                scanner.nextLine();
 
-                switch (choice) {
-                    case 1:
+                String userInput = scanner.nextLine();
+                if (!userInput.matches("\\d+")) {
+                    System.out.println("Please enter a correct number. (1/2/3/4/5): ");
+                    continue;
+                }
+
+                switch (userInput) {
+                    case "1":
                         addNewNaturalDisaster();
                         break;
-                    case 2:
-                        displayLocations();
+                    case "2":
+                        viewDisastersByDate();
                         break;
-                    case 3:
-                        downloadWeatherValues();
+                    case "3":
+                        viewDisastersByName();
                         break;
-                    case 4:
+                    case "4":
+                        viewDisastersByCityName();
+                        break;
+                    case "5":
                         exitProgram();
                         break;
                     default:
-                        System.out.println("Please enter a correct number.");
+                        System.out.println("Please enter a correct number: ");
                 }
             }
         } catch (IOException e) {
@@ -44,20 +51,13 @@ public class WeatherApplication {
     }
 
     private static void displayMenu() {
-        System.out.println("Enter your choice (1/2/3/4): ");
-    }
-
-    private static void downloadWeatherValues() {
-        System.out.println("Downloading weather values");
-    }
-
-    private static void exitProgram() {
-        System.out.println("Goodbye!");
-        System.exit(0);
-    }
-
-    private static void displayLocations() {
-        System.out.println("Displaying locations");
+        System.out.println("Enter your choice:");
+        System.out.println("1. Add new natural disaster");
+        System.out.println("2. View disasters by date");
+        System.out.println("3. View disasters by name");
+        System.out.println("4. View disasters by city name");
+        System.out.println("5. Exit program");
+        System.out.print("Choice: ");
     }
 
     private static void addNewNaturalDisaster() throws IOException {
@@ -84,4 +84,20 @@ public class WeatherApplication {
         }
     }
 
+    private static void viewDisastersByDate() {
+        System.out.println("Displaying disasters from three different db tables");
+    }
+
+    private static void viewDisastersByName() {
+        System.out.println("Displaying disasters from three different db tables");
+    }
+
+    private static void viewDisastersByCityName() {
+        System.out.println("Displaying disasters from three different db tables");
+    }
+
+    private static void exitProgram() {
+        System.out.println("Goodbye!");
+        System.exit(0);
+    }
 }
