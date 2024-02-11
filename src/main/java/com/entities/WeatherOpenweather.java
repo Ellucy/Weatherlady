@@ -23,8 +23,8 @@ public class WeatherOpenweather extends WeatherData {
         @GeneratedValue
         private UUID weatherId;
 
-        @Column(name = "country")
-        private String country;
+        @Column(name = "country_name")
+        private String countryName;
 
         @NotNull(message = "City name cannot be null")
         @Column(name = "city_name")
@@ -50,8 +50,8 @@ public class WeatherOpenweather extends WeatherData {
         @Column(name = "humidity")
         private Integer humidity;
 
-        @Column(name = "wind_Degree")
-        private String windDegree;
+        @Column(name = "wind_direction")
+        private String windDirection;
 
         @Column(name = "wind_speed")
         private Double windSpeed;
