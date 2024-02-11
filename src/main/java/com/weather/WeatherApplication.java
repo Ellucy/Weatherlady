@@ -26,10 +26,10 @@ public class WeatherApplication {
                         addNewNaturalDisaster();
                         break;
                     case 2:
-                        displayLocations();
+                        displayDisasterInSelectedDate();
                         break;
                     case 3:
-                        downloadWeatherValues();
+                        displayDisasterWithSelectedDisasterName();
                         break;
                     case 4:
                         exitProgram();
@@ -45,19 +45,6 @@ public class WeatherApplication {
 
     private static void displayMenu() {
         System.out.println("Enter your choice (1/2/3/4): ");
-    }
-
-    private static void downloadWeatherValues() {
-        System.out.println("Downloading weather values");
-    }
-
-    private static void exitProgram() {
-        System.out.println("Goodbye!");
-        System.exit(0);
-    }
-
-    private static void displayLocations() {
-        System.out.println("Displaying locations");
     }
 
     private static void addNewNaturalDisaster() throws IOException {
@@ -84,4 +71,16 @@ public class WeatherApplication {
         }
     }
 
+    private static void displayDisasterInSelectedDate() {
+        System.out.println("Displaying disasters from three different db tables");
+    }
+
+    private static void displayDisasterWithSelectedDisasterName() {
+        System.out.println("Displaying disasters from three different db tables");
+    }
+
+    private static void exitProgram() {
+        System.out.println("Goodbye!");
+        System.exit(0);
+    }
 }
