@@ -33,6 +33,7 @@ public class WeatherstackDataRetrieval {
             JSONObject jsonResponse = downloadWeatherData(weatherstackResponse);
 
             // Extracting current weather data
+            assert jsonResponse != null;
             JSONObject currentWeather = jsonResponse.getJSONObject("current");
 
             // Extract temperature, pressure, humidity, wind speed, and wind direction

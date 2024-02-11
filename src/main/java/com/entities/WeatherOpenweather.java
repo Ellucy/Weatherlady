@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -34,6 +35,10 @@ public class WeatherOpenweather {
         @Column(name = "longitude")
         private Double longitude;
 
+        @NotNull(message = "Date cannot be null")
+        @Column(name = "date")
+        private Date date;
+
 
         @Column(name = "temperature")
         private Double temperature;
@@ -43,6 +48,9 @@ public class WeatherOpenweather {
 
         @Column(name = "humidity")
         private Integer humidity;
+
+        @Column(name = "wind_Degree")
+        private String windDegree;
 
         @Column(name = "wind_speed")
         private Double windSpeed;
