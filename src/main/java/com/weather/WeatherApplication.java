@@ -26,12 +26,15 @@ public class WeatherApplication {
                         addNewNaturalDisaster();
                         break;
                     case 2:
-                        displayDisasterInSelectedDate();
+                        viewDisastersByDate();
                         break;
                     case 3:
-                        displayDisasterWithSelectedDisasterName();
+                        viewDisastersByName();
                         break;
                     case 4:
+                        viewDisastersByCityName();
+                        break;
+                    case 5:
                         exitProgram();
                         break;
                     default:
@@ -44,7 +47,13 @@ public class WeatherApplication {
     }
 
     private static void displayMenu() {
-        System.out.println("Enter your choice (1/2/3/4): ");
+        System.out.println("Enter your choice:");
+        System.out.println("1. Add new natural disaster");
+        System.out.println("2. View disasters by date");
+        System.out.println("3. View disasters by name");
+        System.out.println("4. View disasters by city name");
+        System.out.println("5. Exit program");
+        System.out.print("Choice: ");
     }
 
     private static void addNewNaturalDisaster() throws IOException {
@@ -71,11 +80,15 @@ public class WeatherApplication {
         }
     }
 
-    private static void displayDisasterInSelectedDate() {
+    private static void viewDisastersByDate() {
         System.out.println("Displaying disasters from three different db tables");
     }
 
-    private static void displayDisasterWithSelectedDisasterName() {
+    private static void viewDisastersByName() {
+        System.out.println("Displaying disasters from three different db tables");
+    }
+
+    private static void viewDisastersByCityName() {
         System.out.println("Displaying disasters from three different db tables");
     }
 
