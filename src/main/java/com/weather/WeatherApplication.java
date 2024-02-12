@@ -12,7 +12,10 @@ import com.entities.WeatherWeatherstack;
 import org.hibernate.Transaction;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -96,21 +99,61 @@ public class WeatherApplication {
     }
 
     private static void viewDisastersByDate() {
-        System.out.println("Displaying disasters from three different db tables");
+
+        try (Session session = sessionFactory.openSession()) {
+
+            System.out.println("Enter the date (yyyy-mm-dd) to view disasters that have happened there: ");
+            String inputDate = scanner.nextLine();
+            Timestamp date = convertStringToTimestamp(inputDate);
+            String displayString = inputDate.substring(0, 1).toUpperCase() + inputDate.substring(1).toLowerCase();
+
+            List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE date= :date ", WeatherOpenweather.class)
+                    .setParameter("date", date)
+                    .getResultList();
+            List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE date= :date ", WeatherAccuweather.class)
+                    .setParameter("date", date)
+                    .getResultList();
+            List<WeatherWeatherstack> queryWeatherstackByDate = session.createQuery("FROM WeatherWeatherstack WHERE date= :date ", WeatherWeatherstack.class)
+                    .setParameter("date", date)
+                    .getResultList();
+
+            displayDisasters(displayString, queryOpenWeather, queryAccuweather, queryWeatherstackByDate);
+            System.out.println("Weather data  fetched successfully!");
+
+        } catch (Exception e) {
+            System.out.println("Failed to fetch disaster data by date. Error: " + e.getMessage());
+        }
+    }
+    private static Timestamp convertStringToTimestamp(String dateString) {
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date parsedDate = dateFormat.parse(dateString);
+            return new Timestamp(parsedDate.getTime());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private static void viewDisastersByName() {
 
         try (Session session = sessionFactory.openSession()) {
 
-            Transaction transaction = session.beginTransaction();
             System.out.println("Please enter the name of the natural disaster you want to check: ");
             String disasterName = scanner.nextLine();
             String displayString = disasterName.substring(0, 1).toUpperCase() + disasterName.substring(1).toLowerCase();
 
-            List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= '" + disasterName + "'", WeatherOpenweather.class).getResultList();
-            List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE naturalDisaster= '" + disasterName + "'", WeatherAccuweather.class).getResultList();
-            List<WeatherWeatherstack> queryWeatherstack = session.createQuery("FROM WeatherWeatherstack WHERE naturalDisaster= '" + disasterName + "'", WeatherWeatherstack.class).getResultList();
+            List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= '" + disasterName + "'", WeatherOpenweather.class)
+                    .setParameter("naturalDisaster", disasterName)
+                    .getResultList();
+            List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE naturalDisaster= '" + disasterName + "'", WeatherAccuweather.class)
+                    .setParameter("naturalDisaster", disasterName)
+                    .getResultList();
+            List<WeatherWeatherstack> queryWeatherstack = session.createQuery("FROM WeatherWeatherstack WHERE naturalDisaster= '" + disasterName + "'", WeatherWeatherstack.class)
+                    .setParameter("naturalDisaster", disasterName)
+                    .getResultList();
 
             displayDisasters(displayString, queryOpenWeather, queryAccuweather, queryWeatherstack);
 
