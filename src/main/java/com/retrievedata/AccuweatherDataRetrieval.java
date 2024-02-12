@@ -15,18 +15,15 @@ public class AccuweatherDataRetrieval {
     public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
-
         AccuweatherLocationDetails locationDetails = AccuweatherLocationHandler.getLocationDetails(apiKey, transformedInput);
 
         String locationKey = locationDetails.getLocationKey();
-
         String accuweatherOneDayUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/" + locationKey + "?apikey=" + apiKey + "&details=true";
 
         try {
 
             JSONObject jsonResponse = downloadWeatherData(accuweatherOneDayUrl);
 
-            // DailyForecasts data, Information for current day, the first day in array (index 0)
             assert jsonResponse != null;
             JSONObject forecast = jsonResponse.getJSONArray("DailyForecasts").getJSONObject(0);
 
@@ -36,7 +33,7 @@ public class AccuweatherDataRetrieval {
             double maxTemp = temperature.getJSONObject("Maximum").getDouble("Value");
             double averageTemp = (minTemp + maxTemp) / 2;
 
-            // Relative humidity data
+            // Humidity data
             JSONObject relativeHumidity = forecast.getJSONObject("Day").getJSONObject("RelativeHumidity");
             int averageRH = relativeHumidity.getInt("Average");
 
@@ -66,7 +63,6 @@ public class AccuweatherDataRetrieval {
             DecimalFormat df = new DecimalFormat("#.##");
             double roundedTemp = Double.parseDouble(df.format(averageTempCelsius));
             weather.setTemperature(roundedTemp);
-
             weather.setHumidity(averageRH);
             weather.setWindDirection(windDirectionLocalized + " (" + windDirectionDegrees + "°)");
             weather.setWindSpeed(windSpeed);
