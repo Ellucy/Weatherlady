@@ -158,10 +158,24 @@ public class WeatherApplication {
 
             System.out.println("Enter the country name to view disasters that have happened there: ");
             String countryName = scanner.nextLine();
-            String displayString = countryName.substring(0, 1).toUpperCase() + countryName.substring(1).toLowerCase();
 
-            List<WeatherOpenweather> openweatherDisasters = session.createQuery("FROM WeatherOpenweather WHERE countryName = :countryName", WeatherOpenweather.class)
-                    .setParameter("countryName", countryName)
+            String[] words = countryName.split("\\s+");
+            StringBuilder displayStringBuilder = new StringBuilder();
+
+            for (String word : words) {
+                if (word.length() > 0) {
+                    String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                    displayStringBuilder.append(capitalizedWord).append(" ");
+                }
+            }
+
+            String displayString = displayStringBuilder.toString().trim();
+
+            String countryCode = CountryCodeConverter.convertCountryNameToCode(countryName);
+            System.out.println(countryCode);
+
+            List<WeatherOpenweather> openweatherDisasters = session.createQuery("FROM WeatherOpenweather WHERE countryName = :countryCode", WeatherOpenweather.class)
+                    .setParameter("countryCode", countryCode)
                     .getResultList();
 
             List<WeatherAccuweather> accuweatherDisasters = session.createQuery("FROM WeatherAccuweather WHERE countryName = :countryName", WeatherAccuweather.class)
