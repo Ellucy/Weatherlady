@@ -54,6 +54,9 @@ public class WeatherApplication {
                         viewDisastersByCityName();
                         break;
                     case "5":
+                        viewDisastersByCountryName();
+                        break;
+                    case "6":
                         exitProgram();
                         break;
                     default:
@@ -71,7 +74,8 @@ public class WeatherApplication {
         System.out.println("2. View disasters by date");
         System.out.println("3. View disasters by disaster name");
         System.out.println("4. View disasters by city name");
-        System.out.println("5. Exit program");
+        System.out.println("5. View disasters by country name");
+        System.out.println("6. Exit program");
         System.out.print("Choice: ");
     }
 
@@ -148,6 +152,33 @@ public class WeatherApplication {
         }
     }
 
+    private static void viewDisastersByCountryName() {
+
+        try (Session session = sessionFactory.openSession()) {
+
+            System.out.println("Enter the country name to view disasters that have happened there: ");
+            String countryName = scanner.nextLine();
+            String displayString = countryName.substring(0, 1).toUpperCase() + countryName.substring(1).toLowerCase();
+
+            List<WeatherOpenweather> openweatherDisasters = session.createQuery("FROM WeatherOpenweather WHERE countryName = :countryName", WeatherOpenweather.class)
+                    .setParameter("countryName", countryName)
+                    .getResultList();
+
+            List<WeatherAccuweather> accuweatherDisasters = session.createQuery("FROM WeatherAccuweather WHERE countryName = :countryName", WeatherAccuweather.class)
+                    .setParameter("countryName", countryName)
+                    .getResultList();
+
+            List<WeatherWeatherstack> weatherstackDisasters = session.createQuery("FROM WeatherWeatherstack WHERE countryName = :countryName", WeatherWeatherstack.class)
+                    .setParameter("countryName", countryName)
+                    .getResultList();
+
+            displayDisasters(displayString, openweatherDisasters, accuweatherDisasters, weatherstackDisasters);
+
+        } catch (Exception e) {
+            System.out.println("Failed to fetch disaster data by city name. Error: " + e.getMessage());
+        }
+    }
+
     private static void exitProgram() {
         System.out.println("Goodbye!");
         System.exit(0);
@@ -158,10 +189,7 @@ public class WeatherApplication {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = dateFormat.format(entity.getDate());
 
-        // Latitude
         String latitudeDirection = entity.getLatitude() >= 0 ? "N" : "S";
-
-        // Longitude
         String longitudeDirection = entity.getLongitude() >= 0 ? "E" : "W";
 
         System.out.println("Event: " + entity.getNaturalDisaster() + " (" + entity.getDescription() + ")"
