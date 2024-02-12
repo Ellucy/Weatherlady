@@ -1,6 +1,5 @@
 package com.entities;
 
-import com.retrievedata.WeatherData;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
