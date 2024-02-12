@@ -9,6 +9,7 @@ import org.hibernate.cfg.Configuration;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.retrievedata.APIConnection.downloadWeatherData;
@@ -50,7 +51,14 @@ public class WeatherstackDataRetrieval {
             weather.setCityName(jsonResponse.getJSONObject("location").getString("name"));
             weather.setLatitude(jsonResponse.getJSONObject("location").getDouble("lat"));
             weather.setLongitude(jsonResponse.getJSONObject("location").getDouble("lon"));
-            weather.setDate(new Date(jsonResponse.getJSONObject("location").getLong("localtime_epoch") * 1000));
+
+            long dateLong = jsonResponse.getJSONObject("location").getLong("localtime_epoch");
+            Date dateObject =  new Date(dateLong * 1000);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = dateFormat.format(dateObject);
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+            weather.setDate(date);
+
             weather.setTemperature((double) temperature);
             weather.setPressure(pressure);
             weather.setHumidity(humidity);
