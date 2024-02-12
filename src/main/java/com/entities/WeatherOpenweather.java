@@ -16,50 +16,50 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name= "weatheropenweather")
-public class WeatherOpenweather extends WeatherData implements DataEntity{
+@Table(name = "weatheropenweather")
+public class WeatherOpenweather extends WeatherData implements DataEntity {
 
-        @Id
-        @GeneratedValue
-        private UUID weatherId;
+    @Id
+    @GeneratedValue
+    private UUID weatherId;
 
-        @Column(name = "country_name")
-        private String countryName;
+    @Column(name = "country_name")
+    private String countryName;
 
-        @NotNull(message = "City name cannot be null")
-        @Column(name = "city_name")
-        private String cityName;
+    @NotNull(message = "City name cannot be null")
+    @Column(name = "city_name")
+    private String cityName;
 
-        @Column(name = "latitude")
-        private Double latitude;
+    @Column(name = "latitude")
+    private Double latitude;
 
-        @Column(name = "longitude")
-        private Double longitude;
+    @Column(name = "longitude")
+    private Double longitude;
 
-        @NotNull(message = "Date cannot be null")
-        @Column(name = "date")
-        private Date date;
+    @NotNull(message = "Date cannot be null")
+    @Column(name = "date")
+    private Date date;
 
 
-        @Column(name = "temperature")
-        private Double temperature;
+    @Column(name = "temperature")
+    private Double temperature;
 
-        @Column(name = "pressure")
-        private Integer pressure;
+    @Column(name = "pressure")
+    private Integer pressure;
 
-        @Column(name = "humidity")
-        private Integer humidity;
+    @Column(name = "humidity")
+    private Integer humidity;
 
-        @Column(name = "wind_direction")
-        private String windDirection;
+    @Column(name = "wind_direction")
+    private String windDirection;
 
-        @Column(name = "wind_speed")
-        private Double windSpeed;
+    @Column(name = "wind_speed")
+    private Double windSpeed;
 
-        @NotNull(message = "Disaster cannot be null")
-        @Column(name = "natural_disaster")
-        private String naturalDisaster;
+    @NotNull(message = "Disaster cannot be null")
+    @Column(name = "natural_disaster")
+    private String naturalDisaster;
 
-        @Column(name = "description")
-        private String description;
+    @Column(name = "description")
+    private String description;
 }

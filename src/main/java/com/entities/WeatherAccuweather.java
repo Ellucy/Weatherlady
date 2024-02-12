@@ -16,8 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-@Table(name= "weatheraccuweather")
+@Table(name = "weatheraccuweather")
 public class WeatherAccuweather extends WeatherData implements DataEntity {
 
     @Id
