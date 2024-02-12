@@ -1,5 +1,6 @@
 package com.retrievedata;
 
+import com.entities.WeatherData;
 import com.weather.SessionFactoryProvider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

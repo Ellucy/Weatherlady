@@ -1,11 +1,6 @@
 package com.retrievedata;
 
 import com.entities.WeatherWeatherstack;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-
-import org.hibernate.cfg.Configuration;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -19,7 +14,6 @@ public class WeatherstackDataRetrieval {
     public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
-
         String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + apiKey + "&query=" + transformedInput;
 
         try {

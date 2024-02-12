@@ -54,7 +54,6 @@ public class AccuweatherLocationHandler {
             System.out.println("Latitude: " + latitude);
             System.out.println("Longitude: " + longitude);
 
-            // Return location key
             return new AccuweatherLocationDetails(locationKey, cityName, regionName, countryName, latitude, longitude);
         } finally {
             connection.disconnect();

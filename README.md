@@ -16,6 +16,19 @@ The Weather Data Retrieval Application is a Java-based tool designed to fetch, p
 and store weather data from various sources. It allows users to retrieve real-time weather 
 information for specific locations and save it to a database for further analysis.
 
+Users can insert a new disaster by providing the following information:
+
+- The name of the city where the disaster occurred
+- Name of the specific disaster
+- An optional comment, such as the magnitude of an earthquake
+
+Users can also search for disasters that have occurred by:
+
+- The date on which it happened
+- The name of the disaster
+- The name of the city where it happened
+- The name of the country where it happened
+
 ### Features
 
 - Data Retrieval: Fetch weather data from multiple external APIs- WeatherStack, AccuWeather, OpenWeather.

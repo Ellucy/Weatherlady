@@ -9,7 +9,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import com.entities.WeatherOpenweather;
 import com.entities.WeatherWeatherstack;
-import org.hibernate.Transaction;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -36,7 +35,6 @@ public class WeatherApplication {
             while (true) {
 
                 displayMenu();
-
                 String userInput = scanner.nextLine();
                 if (!userInput.matches("\\d+")) {
                     System.out.println("Please enter a correct number. (1/2/3/4/5): ");
@@ -72,6 +70,7 @@ public class WeatherApplication {
     }
 
     private static void displayMenu() {
+
         System.out.println("Enter your choice:");
         System.out.println("1. Add new natural disaster");
         System.out.println("2. View disasters by date");
@@ -122,19 +121,17 @@ public class WeatherApplication {
                     .getResultList();
 
             displayDisasters(displayString, queryOpenWeather, queryAccuweather, queryWeatherstackByDate);
-            System.out.println("Weather data  fetched successfully!");
-
         } catch (Exception e) {
             System.out.println("Failed to fetch disaster data by date. Error: " + e.getMessage());
         }
     }
+
     private static Timestamp convertStringToTimestamp(String dateString) {
 
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date parsedDate = dateFormat.parse(dateString);
             return new Timestamp(parsedDate.getTime());
-
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
@@ -160,9 +157,6 @@ public class WeatherApplication {
                     .getResultList();
 
             displayDisasters(displayString, queryOpenWeather, queryAccuweather, queryWeatherstack);
-
-            System.out.println("Weather data fetched successfully!");
-
         } catch (Exception e) {
             System.out.println("Failed to fetch weather data. Error: " + e.getMessage());
         }
@@ -179,17 +173,14 @@ public class WeatherApplication {
             List<WeatherOpenweather> openweatherDisasters = session.createQuery("FROM WeatherOpenweather WHERE cityName = :cityName", WeatherOpenweather.class)
                     .setParameter("cityName", cityName)
                     .getResultList();
-
             List<WeatherAccuweather> accuweatherDisasters = session.createQuery("FROM WeatherAccuweather WHERE cityName = :cityName", WeatherAccuweather.class)
                     .setParameter("cityName", cityName)
                     .getResultList();
-
             List<WeatherWeatherstack> weatherstackDisasters = session.createQuery("FROM WeatherWeatherstack WHERE cityName = :cityName", WeatherWeatherstack.class)
                     .setParameter("cityName", cityName)
                     .getResultList();
 
             displayDisasters(displayString, openweatherDisasters, accuweatherDisasters, weatherstackDisasters);
-
         } catch (Exception e) {
             System.out.println("Failed to fetch disaster data by city name. Error: " + e.getMessage());
         }
@@ -206,14 +197,13 @@ public class WeatherApplication {
             StringBuilder displayStringBuilder = new StringBuilder();
 
             for (String word : words) {
-                if (word.length() > 0) {
+                if (!word.isEmpty()) {
                     String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
                     displayStringBuilder.append(capitalizedWord).append(" ");
                 }
             }
 
             String displayString = displayStringBuilder.toString().trim();
-
             String countryCode = CountryCodeConverter.convertCountryNameToCode(countryName);
             System.out.println(countryCode);
 
@@ -230,7 +220,6 @@ public class WeatherApplication {
                     .getResultList();
 
             displayDisasters(displayString, openweatherDisasters, accuweatherDisasters, weatherstackDisasters);
-
         } catch (Exception e) {
             System.out.println("Failed to fetch disaster data by city name. Error: " + e.getMessage());
         }
