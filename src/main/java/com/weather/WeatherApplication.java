@@ -158,9 +158,16 @@ public class WeatherApplication {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = dateFormat.format(entity.getDate());
 
+        // Latitude
+        String latitudeDirection = entity.getLatitude() >= 0 ? "N" : "S";
+
+        // Longitude
+        String longitudeDirection = entity.getLongitude() >= 0 ? "E" : "W";
+
         System.out.println("Event: " + entity.getNaturalDisaster() + " (" + entity.getDescription() + ")"
                 + "\n\tLocation: " + entity.getCityName() + ", " + entity.getCountryName()
-                + " - " + entity.getLatitude() + "° N, " + entity.getLongitude() + "° W"
+                + " lat/lon: " + Math.abs(entity.getLatitude()) + "° " + latitudeDirection + ", " +
+                Math.abs(entity.getLongitude()) + "° " + longitudeDirection
                 + "\n\tDate: " + formattedDate
                 + "\n\t\tTemperature: " + entity.getTemperature() + "°C"
                 + "\n\t\tPressure: " + entity.getPressure()
