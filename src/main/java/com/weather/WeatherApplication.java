@@ -106,29 +106,51 @@ public class WeatherApplication {
             Transaction transaction = session.beginTransaction();
             System.out.println("Please enter the name of the natural disaster you want to check: ");
             String disasterName = scanner.nextLine();
+            String displayString = disasterName.substring(0, 1).toUpperCase() + disasterName.substring(1).toLowerCase();
+
             List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= '" + disasterName + "'", WeatherOpenweather.class).getResultList();
             List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE naturalDisaster= '" + disasterName + "'", WeatherAccuweather.class).getResultList();
             List<WeatherWeatherstack> queryWeatherstack = session.createQuery("FROM WeatherWeatherstack WHERE naturalDisaster= '" + disasterName + "'", WeatherWeatherstack.class).getResultList();
 
-            String displayString = disasterName.substring(0, 1).toUpperCase() + disasterName.substring(1).toLowerCase();
-            System.out.println(displayString + " cases from Openweather\n");
-            for (WeatherOpenweather entity : queryOpenWeather) {
-                printFetchedData(entity);
-            }
-            System.out.println(displayString + " cases from Accuweather\n");
-            for (WeatherAccuweather entity : queryAccuweather) {
-                printFetchedData(entity);
-            }
-            System.out.println(displayString + " cases from Weatherstack\n");
-            for (WeatherWeatherstack entity : queryWeatherstack) {
-                printFetchedData(entity);
-            }
+            displayDisasters(displayString, queryOpenWeather, queryAccuweather, queryWeatherstack);
 
-            transaction.commit();
             System.out.println("Weather data fetched successfully!");
+
         } catch (Exception e) {
             System.out.println("Failed to fetch weather data. Error: " + e.getMessage());
         }
+    }
+
+    private static void viewDisastersByCityName() {
+
+        try (Session session = sessionFactory.openSession()) {
+
+            System.out.println("Enter the city name to view disasters that have happened there: ");
+            String cityName = scanner.nextLine();
+            String displayString = cityName.substring(0, 1).toUpperCase() + cityName.substring(1).toLowerCase();
+
+            List<WeatherOpenweather> openweatherDisasters = session.createQuery("FROM WeatherOpenweather WHERE cityName = :cityName", WeatherOpenweather.class)
+                    .setParameter("cityName", cityName)
+                    .getResultList();
+
+            List<WeatherAccuweather> accuweatherDisasters = session.createQuery("FROM WeatherAccuweather WHERE cityName = :cityName", WeatherAccuweather.class)
+                    .setParameter("cityName", cityName)
+                    .getResultList();
+
+            List<WeatherWeatherstack> weatherstackDisasters = session.createQuery("FROM WeatherWeatherstack WHERE cityName = :cityName", WeatherWeatherstack.class)
+                    .setParameter("cityName", cityName)
+                    .getResultList();
+
+            displayDisasters(displayString, openweatherDisasters, accuweatherDisasters, weatherstackDisasters);
+
+        } catch (Exception e) {
+            System.out.println("Failed to fetch disaster data by city name. Error: " + e.getMessage());
+        }
+    }
+
+    private static void exitProgram() {
+        System.out.println("Goodbye!");
+        System.exit(0);
     }
 
     private static void printFetchedData(DataEntity entity) {
@@ -147,19 +169,20 @@ public class WeatherApplication {
                 + "\n");
     }
 
-    private static void viewDisastersByCityName() {
-
-
-        try (Session session = sessionFactory.openSession()) {
-
-
-        } catch (Exception e) {
-            System.out.println("Failed to fetch disaster data by city name. Error: " + e.getMessage());
+    private static void displayDisasters(String displayString, List<WeatherOpenweather> openweatherDisasters, List<WeatherAccuweather> accuweatherDisasters, List<WeatherWeatherstack> weatherstackDisasters) {
+        System.out.println(displayString + " cases from Openweather\n");
+        for (WeatherOpenweather disaster : openweatherDisasters) {
+            printFetchedData(disaster);
         }
-    }
 
-    private static void exitProgram() {
-        System.out.println("Goodbye!");
-        System.exit(0);
+        System.out.println(displayString + " cases from Accuweather\n");
+        for (WeatherAccuweather disaster : accuweatherDisasters) {
+            printFetchedData(disaster);
+        }
+
+        System.out.println(displayString + " cases from Weatherstack\n");
+        for (WeatherWeatherstack disaster : weatherstackDisasters) {
+            printFetchedData(disaster);
+        }
     }
 }
