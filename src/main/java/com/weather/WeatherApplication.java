@@ -145,13 +145,13 @@ public class WeatherApplication {
             String disasterName = scanner.nextLine();
             String displayString = disasterName.substring(0, 1).toUpperCase() + disasterName.substring(1).toLowerCase();
 
-            List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= '" + disasterName + "'", WeatherOpenweather.class)
+            List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= :naturalDisaster", WeatherOpenweather.class)
                     .setParameter("naturalDisaster", disasterName)
                     .getResultList();
-            List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE naturalDisaster= '" + disasterName + "'", WeatherAccuweather.class)
+            List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE naturalDisaster= :naturalDisaster", WeatherAccuweather.class)
                     .setParameter("naturalDisaster", disasterName)
                     .getResultList();
-            List<WeatherWeatherstack> queryWeatherstack = session.createQuery("FROM WeatherWeatherstack WHERE naturalDisaster= '" + disasterName + "'", WeatherWeatherstack.class)
+            List<WeatherWeatherstack> queryWeatherstack = session.createQuery("FROM WeatherWeatherstack WHERE naturalDisaster= :naturalDisaster", WeatherWeatherstack.class)
                     .setParameter("naturalDisaster", disasterName)
                     .getResultList();
 
