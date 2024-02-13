@@ -1,6 +1,8 @@
 package com.retrievedata;
 
 import com.entities.WeatherAccuweather;
+import com.handlers.APIConnection;
+import com.handlers.DatabaseConnector;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -8,7 +10,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.retrievedata.APIConnection.downloadWeatherData;
 
 public class AccuweatherDataRetrieval {
 
@@ -22,7 +23,7 @@ public class AccuweatherDataRetrieval {
 
         try {
 
-            JSONObject jsonResponse = downloadWeatherData(accuweatherOneDayUrl);
+            JSONObject jsonResponse = APIConnection.downloadWeatherData(accuweatherOneDayUrl);
 
             assert jsonResponse != null;
             JSONObject forecast = jsonResponse.getJSONArray("DailyForecasts").getJSONObject(0);
@@ -47,6 +48,11 @@ public class AccuweatherDataRetrieval {
             String dateString = forecast.getString("Date");
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
 
+            // Transform fahrenheit to Celsius ((1°F − 32) × 5/9)
+            double averageTempCelsius = (averageTemp - 32) * 5 / 9;
+            DecimalFormat df = new DecimalFormat("#.##");
+            double roundedTemp = Double.parseDouble(df.format(averageTempCelsius));
+
             // Create Weather entity
             WeatherAccuweather weather = new WeatherAccuweather();
             weather.setCountryName(locationDetails.getCountryName());
@@ -57,11 +63,6 @@ public class AccuweatherDataRetrieval {
             weather.setDate(date);
             weather.setNaturalDisaster(disaster);
             weather.setDescription(description);
-
-            // Transform fahrenheit to Celsius ((1°F − 32) × 5/9)
-            double averageTempCelsius = (averageTemp - 32) * 5 / 9;
-            DecimalFormat df = new DecimalFormat("#.##");
-            double roundedTemp = Double.parseDouble(df.format(averageTempCelsius));
             weather.setTemperature(roundedTemp);
             weather.setHumidity(averageRH);
             weather.setWindDirection(windDirectionLocalized + " (" + windDirectionDegrees + "°)");
@@ -69,6 +70,7 @@ public class AccuweatherDataRetrieval {
 
             // Save Weather entity to the database
             DatabaseConnector.saveWeatherData(weather);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -47,13 +47,6 @@ public class AccuweatherLocationHandler {
             double latitude = geoPositionObject.getDouble("Latitude");
             double longitude = geoPositionObject.getDouble("Longitude");
 
-            // Print extracted information
-            System.out.println("City Name: " + cityName);
-            System.out.println("Region Name: " + regionName);
-            System.out.println("Country Name: " + countryName);
-            System.out.println("Latitude: " + latitude);
-            System.out.println("Longitude: " + longitude);
-
             return new AccuweatherLocationDetails(locationKey, cityName, regionName, countryName, latitude, longitude);
         } finally {
             connection.disconnect();

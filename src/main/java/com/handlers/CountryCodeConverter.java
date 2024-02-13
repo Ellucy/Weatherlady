@@ -1,4 +1,4 @@
-package com.weather;
+package com.handlers;
 
 import java.util.Locale;
 

@@ -1,7 +1,6 @@
-package com.retrievedata;
+package com.handlers;
 
 import com.entities.WeatherData;
-import com.weather.SessionFactoryProvider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
