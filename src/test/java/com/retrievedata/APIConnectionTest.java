@@ -51,7 +51,7 @@ public class APIConnectionTest {
     }
 
     @Test
-    public void downloadWeatherDataFailure() {
+    public void testDownloadWeatherDataFailure() {
         stubFor(get(urlEqualTo("/weather"))
                 .willReturn(aResponse()
                         .withStatus(500)
