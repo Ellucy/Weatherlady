@@ -6,6 +6,10 @@ public class CountryCodeConverter {
 
     public static String convertCountryNameToCode(String countryName) {
 
+        if (countryName == null || countryName.isEmpty()) {
+            return null;
+        }
+
         Locale[] locales = Locale.getAvailableLocales();
 
         for (Locale locale : locales) {
