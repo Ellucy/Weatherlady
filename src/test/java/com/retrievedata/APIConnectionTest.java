@@ -2,6 +2,7 @@ package com.retrievedata;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.weather.WeatherController;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +42,7 @@ public class APIConnectionTest {
 
         String url = "http://localhost:" + PORT + "/weather";
         try {
-            JSONObject data = APIConnection.downloadWeatherData(url);
+            JSONObject data = WeatherController.downloadWeatherData(url);
             assertNotNull(data);
             assertEquals(25.0, data.getDouble("temperature"), 0.01);
             assertEquals(60, data.getInt("humidity"));
@@ -59,7 +60,7 @@ public class APIConnectionTest {
 
         String url = "http://localhost:" + PORT + "/weather";
         try {
-            JSONObject data = APIConnection.downloadWeatherData(url);
+            JSONObject data = WeatherController.downloadWeatherData(url);
             assertNull(data); // Expecting null response for failure
         } catch (IOException e) {
             fail("IOException occurred: " + e.getMessage());
