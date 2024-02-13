@@ -21,6 +21,10 @@ public class CountryCodeConverter {
 
     private static boolean countryNameEquals(String inputName, String displayName) {
 
+        if (inputName == null) {
+            return false;
+        }
+
         String[] input = inputName.split(" ");
 
         StringBuilder normalizedInput = new StringBuilder();
