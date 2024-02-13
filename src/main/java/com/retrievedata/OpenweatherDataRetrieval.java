@@ -1,6 +1,7 @@
 package com.retrievedata;
 
 import com.entities.WeatherOpenweather;
+import com.weather.WeatherController;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -10,10 +11,11 @@ public class OpenweatherDataRetrieval {
 
     public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) {
 
+        String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "%20");
         String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric";
 
         try {
-            JSONObject jsonData = APIConnection.downloadWeatherData(String.format(API_URL, cityName, apiKey));
+            JSONObject jsonData = WeatherController.downloadWeatherData(String.format(API_URL, transformedInput, apiKey));
             assert jsonData != null;
             String countryName = jsonData.getJSONObject("sys").getString("country");
             double latitude = jsonData.getJSONObject("coord").getDouble("lat");
@@ -30,7 +32,7 @@ public class OpenweatherDataRetrieval {
             weatherOpenweather.setCityName(cityName);
             weatherOpenweather.setLatitude(latitude);
             weatherOpenweather.setLongitude(longitude);
-            Date dateObject = new Date(dateLong * 1000);
+            Date dateObject=  new Date(dateLong * 1000);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String dateString = dateFormat.format(dateObject);
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
@@ -43,7 +45,7 @@ public class OpenweatherDataRetrieval {
             weatherOpenweather.setNaturalDisaster(disaster);
             weatherOpenweather.setDescription(description);
 
-            DatabaseConnector.saveWeatherData(weatherOpenweather);
+            WeatherController.saveWeatherData(weatherOpenweather);
             System.out.println("Weather data inserted successfully.");
         } catch (Exception e) {
             e.printStackTrace();

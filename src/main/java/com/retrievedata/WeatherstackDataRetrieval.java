@@ -1,23 +1,22 @@
 package com.retrievedata;
 
 import com.entities.WeatherWeatherstack;
+import com.weather.WeatherController;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.retrievedata.APIConnection.downloadWeatherData;
-
 public class WeatherstackDataRetrieval {
 
     public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
 
-        String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
+        String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "%20");
         String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + apiKey + "&query=" + transformedInput;
 
         try {
-            JSONObject jsonResponse = downloadWeatherData(weatherstackResponse);
+            JSONObject jsonResponse = WeatherController.downloadWeatherData(weatherstackResponse);
 
             // Extracting current weather data
             assert jsonResponse != null;
@@ -30,29 +29,20 @@ public class WeatherstackDataRetrieval {
             int windSpeed = currentWeather.getInt("wind_speed");
             int windDegree = currentWeather.getInt("wind_degree");
             String windDirection = currentWeather.getString("wind_dir");
-
-            // Print extracted data
-            System.out.println("Average Temperature: " + temperature);
-            System.out.println("Pressure: " + pressure);
-            System.out.println("Humidity: " + humidity);
-            System.out.println("Wind Speed: " + windSpeed + " mph");
-            System.out.println("Wind Direction: " + windDirection + " (" + windDegree + "°)");
-
-            // Create a WeatherWeatherstack object and populate it with the extracted data
-            WeatherWeatherstack weather = new WeatherWeatherstack();
-            weather.setCountryName(jsonResponse.getJSONObject("location").getString("country"));
-            weather.setRegionName(jsonResponse.getJSONObject("location").getString("region"));
-            weather.setCityName(jsonResponse.getJSONObject("location").getString("name"));
-            weather.setLatitude(jsonResponse.getJSONObject("location").getDouble("lat"));
-            weather.setLongitude(jsonResponse.getJSONObject("location").getDouble("lon"));
-
             long dateLong = jsonResponse.getJSONObject("location").getLong("localtime_epoch");
             Date dateObject =  new Date(dateLong * 1000);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String dateString = dateFormat.format(dateObject);
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
-            weather.setDate(date);
 
+            // Create a WeatherWeatherstack object and populate it with the extracted data
+            WeatherWeatherstack weather = new WeatherWeatherstack();
+            weather.setCountryName(jsonResponse.getJSONObject("location").getString("country"));
+            weather.setRegionName(jsonResponse.getJSONObject("location").getString("region"));
+            weather.setCityName(cityName);
+            weather.setLatitude(jsonResponse.getJSONObject("location").getDouble("lat"));
+            weather.setLongitude(jsonResponse.getJSONObject("location").getDouble("lon"));
+            weather.setDate(date);
             weather.setTemperature((double) temperature);
             weather.setPressure(pressure);
             weather.setHumidity(humidity);
@@ -62,7 +52,7 @@ public class WeatherstackDataRetrieval {
             weather.setDescription(description);
 
             // Save the WeatherWeatherstack object to the database
-            DatabaseConnector.saveWeatherData(weather);
+            WeatherController.saveWeatherData(weather);
         } catch (Exception e) {
             e.printStackTrace();
         }

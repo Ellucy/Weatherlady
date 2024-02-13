@@ -1,14 +1,13 @@
 package com.retrievedata;
 
 import com.entities.WeatherAccuweather;
+import com.weather.WeatherController;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static com.retrievedata.APIConnection.downloadWeatherData;
 
 public class AccuweatherDataRetrieval {
 
@@ -22,7 +21,7 @@ public class AccuweatherDataRetrieval {
 
         try {
 
-            JSONObject jsonResponse = downloadWeatherData(accuweatherOneDayUrl);
+            JSONObject jsonResponse = WeatherController.downloadWeatherData(accuweatherOneDayUrl);
 
             assert jsonResponse != null;
             JSONObject forecast = jsonResponse.getJSONArray("DailyForecasts").getJSONObject(0);
@@ -68,7 +67,7 @@ public class AccuweatherDataRetrieval {
             weather.setWindSpeed(windSpeed);
 
             // Save Weather entity to the database
-            DatabaseConnector.saveWeatherData(weather);
+            WeatherController.saveWeatherData(weather);
         } catch (Exception e) {
             e.printStackTrace();
         }

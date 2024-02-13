@@ -1,4 +1,4 @@
-package com.entities;
+package com.retrievedata;
 
 public abstract class WeatherData {
 }
