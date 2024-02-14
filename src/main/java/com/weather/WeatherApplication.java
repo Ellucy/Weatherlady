@@ -4,6 +4,7 @@ import com.entities.DataEntity;
 import com.entities.WeatherAccuweather;
 import com.entities.WeatherOpenweather;
 import com.entities.WeatherWeatherstack;
+import com.handlers.DateConverter;
 import com.handlers.WeatherApplicationController;
 
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class WeatherApplication {
 
         System.out.println("Enter the date (yyyy-mm-dd) to view disasters that have happened there: ");
         String inputDate = scanner.nextLine();
-        Timestamp date = WeatherApplicationController.convertStringToTimestamp(inputDate);
+        Timestamp date = DateConverter.convertStringToTimestamp(inputDate);
         String displayString = inputDate.substring(0, 1).toUpperCase() + inputDate.substring(1).toLowerCase();
         List<WeatherOpenweather> openweatherDisasters = new ArrayList<>();
         List<WeatherAccuweather> accuweatherDisasters = new ArrayList<>();

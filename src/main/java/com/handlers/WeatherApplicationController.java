@@ -57,18 +57,6 @@ public class WeatherApplicationController {
         }
     }
 
-    public static Timestamp convertStringToTimestamp(String dateString) {
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = dateFormat.parse(dateString);
-            return new Timestamp(parsedDate.getTime());
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static boolean getDisastersByName(List<WeatherOpenweather> openweatherDisasters, String disasterName,
                                              List<WeatherAccuweather> accuweatherDisasters,
                                              List<WeatherWeatherstack> weatherstackDisasters) {
