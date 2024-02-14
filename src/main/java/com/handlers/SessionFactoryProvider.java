@@ -1,4 +1,4 @@
-package com.weather;
+package com.handlers;
 
 import com.entities.WeatherAccuweather;
 import com.entities.WeatherOpenweather;

@@ -2,31 +2,21 @@ package com.weather;
 
 import com.entities.DataEntity;
 import com.entities.WeatherAccuweather;
-import com.retrievedata.AccuweatherDataRetrieval;
-import com.retrievedata.OpenweatherDataRetrieval;
-import com.retrievedata.WeatherstackDataRetrieval;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import com.entities.WeatherOpenweather;
 import com.entities.WeatherWeatherstack;
+import com.handlers.WeatherApplicationController;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class WeatherApplication {
 
-    private static final SessionFactory sessionFactory = SessionFactoryProvider.getSessionFactory();
-
     public static Scanner scanner = new Scanner(System.in);
-
-    private static final String awApiKey = System.getenv("AW_API_KEY");
-    private static final String wsApiKey = System.getenv("WS_API_KEY");
-    private static final String owApiKey = System.getenv("OW_API_KEY");
 
     public static void main(String[] args) {
 
@@ -37,31 +27,18 @@ public class WeatherApplication {
                 displayMenu();
                 String userInput = scanner.nextLine();
                 if (!userInput.matches("\\d+")) {
-                    System.out.println("Please enter a correct number. (1/2/3/4/5): ");
+                    System.out.println("Please enter a correct number. (1/2/3/4/5/6): ");
                     continue;
                 }
 
                 switch (userInput) {
-                    case "1":
-                        addNewNaturalDisaster();
-                        break;
-                    case "2":
-                        viewDisastersByDate();
-                        break;
-                    case "3":
-                        viewDisastersByName();
-                        break;
-                    case "4":
-                        viewDisastersByCityName();
-                        break;
-                    case "5":
-                        viewDisastersByCountryName();
-                        break;
-                    case "6":
-                        exitProgram();
-                        break;
-                    default:
-                        System.out.println("Please enter a correct number: ");
+                    case "1" -> addNewNaturalDisaster();
+                    case "2" -> viewDisastersByDate();
+                    case "3" -> viewDisastersByName();
+                    case "4" -> viewDisastersByCityName();
+                    case "5" -> viewDisastersByCountryName();
+                    case "6" -> exitProgram();
+                    default -> System.out.println("Please enter a correct number: ");
                 }
             }
         } catch (IOException e) {
@@ -71,14 +48,16 @@ public class WeatherApplication {
 
     private static void displayMenu() {
 
-        System.out.println("Enter your choice:");
-        System.out.println("1. Add new natural disaster");
-        System.out.println("2. View disasters by date");
-        System.out.println("3. View disasters by disaster name");
-        System.out.println("4. View disasters by city name");
-        System.out.println("5. View disasters by country name");
-        System.out.println("6. Exit program");
-        System.out.print("Choice: ");
+        System.out.print("""
+            Enter your choice:
+                1. Add new natural disaster
+                2. View disasters by date
+                3. View disasters by disaster name
+                4. View disasters by city name
+                5. View disasters by country name
+                6. Exit program
+            Choice:\t""");
+
     }
 
     private static void addNewNaturalDisaster() throws IOException {
@@ -92,136 +71,89 @@ public class WeatherApplication {
         System.out.println("Enter description to the disaster: ");
         String description = scanner.nextLine();
 
-        try {
-            OpenweatherDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, owApiKey);
-            AccuweatherDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, awApiKey);
-            WeatherstackDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, wsApiKey);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        WeatherApplicationController.addingNaturalDisaster(cityName, disaster, description);
     }
+
 
     private static void viewDisastersByDate() {
 
-        try (Session session = sessionFactory.openSession()) {
+        System.out.println("Enter the date (yyyy-mm-dd) to view disasters that have happened there: ");
+        String inputDate = scanner.nextLine();
+        Timestamp date = WeatherApplicationController.convertStringToTimestamp(inputDate);
+        String displayString = inputDate.substring(0, 1).toUpperCase() + inputDate.substring(1).toLowerCase();
+        List<WeatherOpenweather> openweatherDisasters = new ArrayList<>();
+        List<WeatherAccuweather> accuweatherDisasters = new ArrayList<>();
+        List<WeatherWeatherstack> weatherstackDisasters = new ArrayList<>();
+        boolean isExtracted =  WeatherApplicationController.getDisastersByDate(openweatherDisasters, date, accuweatherDisasters, weatherstackDisasters);
 
-            System.out.println("Enter the date (yyyy-mm-dd) to view disasters that have happened there: ");
-            String inputDate = scanner.nextLine();
-            Timestamp date = convertStringToTimestamp(inputDate);
-            String displayString = inputDate.substring(0, 1).toUpperCase() + inputDate.substring(1).toLowerCase();
-
-            List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE date= :date ", WeatherOpenweather.class)
-                    .setParameter("date", date)
-                    .getResultList();
-            List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE date= :date ", WeatherAccuweather.class)
-                    .setParameter("date", date)
-                    .getResultList();
-            List<WeatherWeatherstack> queryWeatherstackByDate = session.createQuery("FROM WeatherWeatherstack WHERE date= :date ", WeatherWeatherstack.class)
-                    .setParameter("date", date)
-                    .getResultList();
-
-            displayDisasters(displayString, queryOpenWeather, queryAccuweather, queryWeatherstackByDate);
-        } catch (Exception e) {
-            System.out.println("Failed to fetch disaster data by date. Error: " + e.getMessage());
-        }
-    }
-
-    private static Timestamp convertStringToTimestamp(String dateString) {
-
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = dateFormat.parse(dateString);
-            return new Timestamp(parsedDate.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+        if(isExtracted) {
+            displayDisasters(displayString, openweatherDisasters, accuweatherDisasters, weatherstackDisasters);
+            System.out.println("Weather data  fetched successfully!");
+        } else {
+            System.out.println("Failed to fetch disaster data by disaster name");
         }
     }
 
     private static void viewDisastersByName() {
+        System.out.println("Please enter the name of the natural disaster you want to check: ");
+        String disasterName = scanner.nextLine();
+        List<WeatherOpenweather> openweatherDisasters = new ArrayList<>();
+        List<WeatherAccuweather> accuweatherDisasters = new ArrayList<>();
+        List<WeatherWeatherstack> weatherstackDisasters = new ArrayList<>();
 
-        try (Session session = sessionFactory.openSession()) {
+        boolean isExtracted =  WeatherApplicationController.getDisastersByName(openweatherDisasters,
+                disasterName, accuweatherDisasters, weatherstackDisasters);
 
-            System.out.println("Please enter the name of the natural disaster you want to check: ");
-            String disasterName = scanner.nextLine();
+        if (isExtracted) {
             String displayString = disasterName.substring(0, 1).toUpperCase() + disasterName.substring(1).toLowerCase();
-
-            List<WeatherOpenweather> queryOpenWeather = session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= :naturalDisaster", WeatherOpenweather.class)
-                    .setParameter("naturalDisaster", disasterName)
-                    .getResultList();
-            List<WeatherAccuweather> queryAccuweather = session.createQuery("FROM WeatherAccuweather WHERE naturalDisaster= :naturalDisaster", WeatherAccuweather.class)
-                    .setParameter("naturalDisaster", disasterName)
-                    .getResultList();
-            List<WeatherWeatherstack> queryWeatherstack = session.createQuery("FROM WeatherWeatherstack WHERE naturalDisaster= :naturalDisaster", WeatherWeatherstack.class)
-                    .setParameter("naturalDisaster", disasterName)
-                    .getResultList();
-
-            displayDisasters(displayString, queryOpenWeather, queryAccuweather, queryWeatherstack);
-        } catch (Exception e) {
-            System.out.println("Failed to fetch weather data. Error: " + e.getMessage());
+            displayDisasters(displayString, openweatherDisasters, accuweatherDisasters, weatherstackDisasters);
+            System.out.println("Weather data fetched successfully!");
+        } else {
+            System.out.println("Failed to fetch disaster data by disaster name");
         }
+
     }
 
     private static void viewDisastersByCityName() {
 
-        try (Session session = sessionFactory.openSession()) {
+        System.out.println("Enter the city name to view disasters that have happened there: ");
+        String cityName = scanner.nextLine();
 
-            System.out.println("Enter the city name to view disasters that have happened there: ");
-            String cityName = scanner.nextLine();
+        List<WeatherOpenweather> openweatherDisasters = new ArrayList<>();
+        List<WeatherAccuweather> accuweatherDisasters = new ArrayList<>();
+        List<WeatherWeatherstack> weatherstackDisasters = new ArrayList<>();
+
+        boolean isExtracted =  WeatherApplicationController.getDisastersByCityName(openweatherDisasters,
+                cityName, accuweatherDisasters, weatherstackDisasters);
+
+        if (isExtracted) {
             String displayString = cityName.substring(0, 1).toUpperCase() + cityName.substring(1).toLowerCase();
-
-            List<WeatherOpenweather> openweatherDisasters = session.createQuery("FROM WeatherOpenweather WHERE cityName = :cityName", WeatherOpenweather.class)
-                    .setParameter("cityName", cityName)
-                    .getResultList();
-            List<WeatherAccuweather> accuweatherDisasters = session.createQuery("FROM WeatherAccuweather WHERE cityName = :cityName", WeatherAccuweather.class)
-                    .setParameter("cityName", cityName)
-                    .getResultList();
-            List<WeatherWeatherstack> weatherstackDisasters = session.createQuery("FROM WeatherWeatherstack WHERE cityName = :cityName", WeatherWeatherstack.class)
-                    .setParameter("cityName", cityName)
-                    .getResultList();
-
             displayDisasters(displayString, openweatherDisasters, accuweatherDisasters, weatherstackDisasters);
-        } catch (Exception e) {
-            System.out.println("Failed to fetch disaster data by city name. Error: " + e.getMessage());
+            System.out.println("Weather data fetched successfully!");
+        } else {
+            System.out.println("Failed to fetch disaster data by city name");
         }
     }
 
     private static void viewDisastersByCountryName() {
+        System.out.println("Enter the country name to view disasters that have happened there: ");
+        String countryName = scanner.nextLine();
 
-        try (Session session = sessionFactory.openSession()) {
+        List<WeatherOpenweather> openweatherDisasters = new ArrayList<>();
+        List<WeatherAccuweather> accuweatherDisasters = new ArrayList<>();
+        List<WeatherWeatherstack> weatherstackDisasters = new ArrayList<>();
 
-            System.out.println("Enter the country name to view disasters that have happened there: ");
-            String countryName = scanner.nextLine();
+        String[] words = countryName.split("\\s+");
+        StringBuilder displayStringBuilder = new StringBuilder();
 
-            String[] words = countryName.split("\\s+");
-            StringBuilder displayStringBuilder = new StringBuilder();
-
-            for (String word : words) {
-                if (!word.isEmpty()) {
-                    String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
-                    displayStringBuilder.append(capitalizedWord).append(" ");
-                }
-            }
-
+        boolean isExtracted =  WeatherApplicationController.getDisastersByCountryName(openweatherDisasters,
+                countryName, accuweatherDisasters, weatherstackDisasters,words,displayStringBuilder);
+        if (isExtracted) {
             String displayString = displayStringBuilder.toString().trim();
-            String countryCode = CountryCodeConverter.convertCountryNameToCode(countryName);
-            System.out.println(countryCode);
-
-            List<WeatherOpenweather> openweatherDisasters = session.createQuery("FROM WeatherOpenweather WHERE countryName = :countryCode", WeatherOpenweather.class)
-                    .setParameter("countryCode", countryCode)
-                    .getResultList();
-
-            List<WeatherAccuweather> accuweatherDisasters = session.createQuery("FROM WeatherAccuweather WHERE countryName = :countryName", WeatherAccuweather.class)
-                    .setParameter("countryName", countryName)
-                    .getResultList();
-
-            List<WeatherWeatherstack> weatherstackDisasters = session.createQuery("FROM WeatherWeatherstack WHERE countryName = :countryName", WeatherWeatherstack.class)
-                    .setParameter("countryName", countryName)
-                    .getResultList();
-
             displayDisasters(displayString, openweatherDisasters, accuweatherDisasters, weatherstackDisasters);
-        } catch (Exception e) {
-            System.out.println("Failed to fetch disaster data by city name. Error: " + e.getMessage());
+            System.out.println("Weather data fetched successfully!");
+        } else {
+            System.out.println("Failed to fetch disaster data by country name");
         }
     }
 
@@ -250,7 +182,9 @@ public class WeatherApplication {
                 + "\n");
     }
 
-    private static void displayDisasters(String displayString, List<WeatherOpenweather> openweatherDisasters, List<WeatherAccuweather> accuweatherDisasters, List<WeatherWeatherstack> weatherstackDisasters) {
+    private static void displayDisasters(String displayString, List<WeatherOpenweather> openweatherDisasters,
+                                         List<WeatherAccuweather> accuweatherDisasters,
+                                         List<WeatherWeatherstack> weatherstackDisasters) {
         System.out.println(displayString + " cases from Openweather\n");
         for (WeatherOpenweather disaster : openweatherDisasters) {
             printFetchedData(disaster);

@@ -1,23 +1,23 @@
 package com.retrievedata;
 
 import com.entities.WeatherWeatherstack;
+import com.handlers.APIConnection;
+import com.handlers.DatabaseConnector;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.retrievedata.APIConnection.downloadWeatherData;
-
 public class WeatherstackDataRetrieval {
-
     public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
 
-        String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
+        String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "%20");
         String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + apiKey + "&query=" + transformedInput;
 
         try {
-            JSONObject jsonResponse = downloadWeatherData(weatherstackResponse);
+
+            JSONObject jsonResponse = APIConnection.downloadWeatherData(weatherstackResponse);
 
             // Extracting current weather data
             assert jsonResponse != null;
@@ -31,12 +31,6 @@ public class WeatherstackDataRetrieval {
             int windDegree = currentWeather.getInt("wind_degree");
             String windDirection = currentWeather.getString("wind_dir");
 
-            // Print extracted data
-            System.out.println("Average Temperature: " + temperature);
-            System.out.println("Pressure: " + pressure);
-            System.out.println("Humidity: " + humidity);
-            System.out.println("Wind Speed: " + windSpeed + " mph");
-            System.out.println("Wind Direction: " + windDirection + " (" + windDegree + "°)");
 
             // Create a WeatherWeatherstack object and populate it with the extracted data
             WeatherWeatherstack weather = new WeatherWeatherstack();
@@ -62,7 +56,9 @@ public class WeatherstackDataRetrieval {
             weather.setDescription(description);
 
             // Save the WeatherWeatherstack object to the database
+
             DatabaseConnector.saveWeatherData(weather);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
