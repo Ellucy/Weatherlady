@@ -1,4 +1,4 @@
-package com.weather;
+package com.handlers;
 
 import com.handlers.CountryCodeConverter;
 import org.junit.jupiter.api.Test;
