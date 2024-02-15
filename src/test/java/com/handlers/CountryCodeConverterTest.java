@@ -9,41 +9,41 @@ public class CountryCodeConverterTest {
 
     @Test
     public void testConvertCountryNameToCode_ShouldReturnCountryCode() {
-
+        CountryCodeConverter countryCodeConverter = new CountryCodeConverter();
         String countryName = "United States";
-        String countryCode = CountryCodeConverter.convertCountryNameToCode(countryName);
+        String countryCode = countryCodeConverter.convertCountryNameToCode(countryName);
         assertEquals("US", countryCode);
     }
 
     @Test
     public void testConvertCountryNameToCode_CaseInsensitive_ShouldReturnCountryCode() {
-
+        CountryCodeConverter countryCodeConverter = new CountryCodeConverter();
         String countryName = "united states";
-        String countryCode = CountryCodeConverter.convertCountryNameToCode(countryName);
+        String countryCode = countryCodeConverter.convertCountryNameToCode(countryName);
         assertEquals("US", countryCode);
     }
 
     @Test
     public void testConvertCountryNameToCode_InvalidCountryName_ShouldReturnNull() {
-
+        CountryCodeConverter countryCodeConverter = new CountryCodeConverter();
         String countryName = "Non-existing country";
-        String countryCode = CountryCodeConverter.convertCountryNameToCode(countryName);
+        String countryCode = countryCodeConverter.convertCountryNameToCode(countryName);
         assertNull(countryCode);
     }
 
     @Test
     public void testConvertCountryNameToCode_CountryNameIsNull_ShouldReturnNull() {
-
+        CountryCodeConverter countryCodeConverter = new CountryCodeConverter();
         String countryName = null;
-        String countryCode = CountryCodeConverter.convertCountryNameToCode(countryName);
+        String countryCode = countryCodeConverter.convertCountryNameToCode(countryName);
         assertNull(countryCode);
     }
 
     @Test
     public void testConvertCountryNameToCode_CountryNameIsEmpty_ShouldReturnNull() {
-
+        CountryCodeConverter countryCodeConverter = new CountryCodeConverter();
         String countryName = "";
-        String countryCode = CountryCodeConverter.convertCountryNameToCode(countryName);
+        String countryCode = countryCodeConverter.convertCountryNameToCode(countryName);
         assertNull(countryCode);
     }
 }

@@ -11,18 +11,28 @@ import java.util.Date;
 
 public class WeatherstackDataRetrieval {
 
-    public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
+    private final DatabaseConnector databaseConnector;
+    private final APIConnection apiConnection;
+    private final String wsApiKey;
+
+    public WeatherstackDataRetrieval(DatabaseConnector databaseConnector) {
+        this.databaseConnector = databaseConnector;
+        this.apiConnection = new APIConnection();
+        this.wsApiKey = System.getenv("WS_API_KEY");
+    }
+
+    public void downloadAndSetWeatherData(String cityName, String disaster, String description) throws IOException {
 
         if (cityName == null) {
             throw new IllegalArgumentException("City name cannot be null");
         }
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "%20");
-        String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + apiKey + "&query=" + transformedInput;
+        String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + wsApiKey + "&query=" + transformedInput;
 
         try {
 
-            JSONObject jsonResponse = APIConnection.downloadWeatherData(weatherstackResponse);
+            JSONObject jsonResponse = apiConnection.downloadWeatherData(weatherstackResponse);
 
             // Extracting current weather data
             assert jsonResponse != null;
@@ -62,7 +72,7 @@ public class WeatherstackDataRetrieval {
 
             // Save the WeatherWeatherstack object to the database
 
-            DatabaseConnector.saveWeatherData(weather);
+            databaseConnector.saveWeatherData(weather);
 
         } catch (Exception e) {
             e.printStackTrace();

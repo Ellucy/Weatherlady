@@ -6,6 +6,9 @@ import com.entities.WeatherOpenweather;
 import com.entities.WeatherWeatherstack;
 import com.handlers.DateConverter;
 import com.handlers.WeatherApplicationController;
+import com.retrievedata.AccuweatherDataRetrieval;
+import com.retrievedata.OpenweatherDataRetrieval;
+import com.retrievedata.WeatherstackDataRetrieval;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -18,8 +21,11 @@ import java.util.Scanner;
 public class WeatherApplication {
 
     public static Scanner scanner = new Scanner(System.in);
+    private static final WeatherApplicationController weatherApplicationController = new WeatherApplicationController();
+    private static final DateConverter dateConverter = new DateConverter();
 
     public static void main(String[] args) {
+
 
         try {
 
@@ -72,7 +78,7 @@ public class WeatherApplication {
         System.out.println("Enter description to the disaster: ");
         String description = scanner.nextLine();
 
-        WeatherApplicationController.addingNaturalDisaster(cityName, disaster, description);
+        weatherApplicationController.addingNaturalDisaster(cityName, disaster, description);
     }
 
 
@@ -80,12 +86,12 @@ public class WeatherApplication {
 
         System.out.println("Enter the date (yyyy-mm-dd) to view disasters that have happened there: ");
         String inputDate = scanner.nextLine();
-        Timestamp date = DateConverter.convertStringToTimestamp(inputDate);
+        Timestamp date = dateConverter.convertStringToTimestamp(inputDate);
         String displayString = inputDate.substring(0, 1).toUpperCase() + inputDate.substring(1).toLowerCase();
         List<WeatherOpenweather> openweatherDisasters = new ArrayList<>();
         List<WeatherAccuweather> accuweatherDisasters = new ArrayList<>();
         List<WeatherWeatherstack> weatherstackDisasters = new ArrayList<>();
-        boolean isExtracted =  WeatherApplicationController.getDisastersByDate(openweatherDisasters, date, accuweatherDisasters, weatherstackDisasters);
+        boolean isExtracted =  weatherApplicationController.getDisastersByDate(openweatherDisasters, date, accuweatherDisasters, weatherstackDisasters);
 
         if(isExtracted) {
             displayDisasters(displayString, openweatherDisasters, accuweatherDisasters, weatherstackDisasters);
@@ -102,7 +108,7 @@ public class WeatherApplication {
         List<WeatherAccuweather> accuweatherDisasters = new ArrayList<>();
         List<WeatherWeatherstack> weatherstackDisasters = new ArrayList<>();
 
-        boolean isExtracted =  WeatherApplicationController.getDisastersByName(openweatherDisasters,
+        boolean isExtracted =  weatherApplicationController.getDisastersByName(openweatherDisasters,
                 disasterName, accuweatherDisasters, weatherstackDisasters);
 
         if (isExtracted) {
@@ -124,7 +130,7 @@ public class WeatherApplication {
         List<WeatherAccuweather> accuweatherDisasters = new ArrayList<>();
         List<WeatherWeatherstack> weatherstackDisasters = new ArrayList<>();
 
-        boolean isExtracted =  WeatherApplicationController.getDisastersByCityName(openweatherDisasters,
+        boolean isExtracted =  weatherApplicationController.getDisastersByCityName(openweatherDisasters,
                 cityName, accuweatherDisasters, weatherstackDisasters);
 
         if (isExtracted) {
@@ -147,7 +153,7 @@ public class WeatherApplication {
         String[] words = countryName.split("\\s+");
         StringBuilder displayStringBuilder = new StringBuilder();
 
-        boolean isExtracted =  WeatherApplicationController.getDisastersByCountryName(openweatherDisasters,
+        boolean isExtracted =  weatherApplicationController.getDisastersByCountryName(openweatherDisasters,
                 countryName, accuweatherDisasters, weatherstackDisasters,words,displayStringBuilder);
         if (isExtracted) {
             String displayString = displayStringBuilder.toString().trim();

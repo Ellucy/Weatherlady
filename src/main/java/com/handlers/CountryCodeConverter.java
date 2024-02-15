@@ -4,7 +4,7 @@ import java.util.Locale;
 
 public class CountryCodeConverter {
 
-    public static String convertCountryNameToCode(String countryName) {
+    public String convertCountryNameToCode(String countryName) {
 
         if (countryName == null || countryName.isEmpty()) {
             return null;
