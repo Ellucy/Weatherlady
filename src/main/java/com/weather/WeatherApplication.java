@@ -4,11 +4,8 @@ import com.entities.DataEntity;
 import com.entities.WeatherAccuweather;
 import com.entities.WeatherOpenweather;
 import com.entities.WeatherWeatherstack;
-import com.handlers.DateConverter;
+import com.util.DateConverter;
 import com.handlers.WeatherApplicationController;
-import com.retrievedata.AccuweatherDataRetrieval;
-import com.retrievedata.OpenweatherDataRetrieval;
-import com.retrievedata.WeatherstackDataRetrieval;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -22,10 +19,8 @@ public class WeatherApplication {
 
     public static Scanner scanner = new Scanner(System.in);
     private static final WeatherApplicationController weatherApplicationController = new WeatherApplicationController();
-    private static final DateConverter dateConverter = new DateConverter();
 
     public static void main(String[] args) {
-
 
         try {
 
@@ -81,12 +76,11 @@ public class WeatherApplication {
         weatherApplicationController.addingNaturalDisaster(cityName, disaster, description);
     }
 
-
     private static void viewDisastersByDate() {
 
         System.out.println("Enter the date (yyyy-mm-dd) to view disasters that have happened there: ");
         String inputDate = scanner.nextLine();
-        Timestamp date = dateConverter.convertStringToTimestamp(inputDate);
+        Timestamp date = DateConverter.convertStringToTimestamp(inputDate);
         String displayString = inputDate.substring(0, 1).toUpperCase() + inputDate.substring(1).toLowerCase();
         List<WeatherOpenweather> openweatherDisasters = new ArrayList<>();
         List<WeatherAccuweather> accuweatherDisasters = new ArrayList<>();

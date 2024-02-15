@@ -1,10 +1,10 @@
-package com.handlers;
+package com.util;
 
 import java.util.Locale;
 
 public class CountryCodeConverter {
 
-    public String convertCountryNameToCode(String countryName) {
+    public static String convertCountryNameToCode(String countryName) {
 
         if (countryName == null || countryName.isEmpty()) {
             return null;

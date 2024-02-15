@@ -10,7 +10,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class AccuweatherDataRetrieval {
 
     private final DatabaseConnector databaseConnector;

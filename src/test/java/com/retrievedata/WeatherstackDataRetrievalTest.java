@@ -3,7 +3,6 @@ package com.retrievedata;
 import com.entities.WeatherWeatherstack;
 import com.handlers.APIConnection;
 import com.handlers.DatabaseConnector;
-import com.retrievedata.WeatherstackDataRetrieval;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WeatherstackDataRetrievalTest {
@@ -36,7 +34,7 @@ public class WeatherstackDataRetrievalTest {
         // Mock JSON response
         String jsonResponse = "{\"location\":{\"country\":\"US\",\"region\":\"NY\",\"name\":\"New York\",\"lat\":40.712,\"lon\":-74.006,\"localtime_epoch\":1645003200},\"current\":{\"temperature\":10,\"pressure\":1012,\"humidity\":80,\"wind_speed\":10,\"wind_degree\":180,\"wind_dir\":\"S\"}}";
 
-//        when(apiConnection.downloadWeatherData(anyString())).thenReturn(new JSONObject(jsonResponse));
+        when(apiConnection.downloadWeatherData(anyString())).thenReturn(new JSONObject(jsonResponse));
 
         // Call the method under test
         weatherstackDataRetrieval.downloadAndSetWeatherData("New York", "Hurricane", "Category 5 hurricane");

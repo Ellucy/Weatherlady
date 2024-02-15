@@ -1,5 +1,6 @@
 package com.handlers;
 
+import com.util.CountryCodeConverter;
 import com.entities.WeatherAccuweather;
 import com.entities.WeatherOpenweather;
 import com.entities.WeatherWeatherstack;
@@ -8,7 +9,6 @@ import com.retrievedata.OpenweatherDataRetrieval;
 import com.retrievedata.WeatherstackDataRetrieval;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -16,7 +16,6 @@ import java.util.List;
 
 public class WeatherApplicationController {
 
-    private  final SessionFactory sessionFactory = SessionFactoryProvider.getSessionFactory();
     private final OpenweatherDataRetrieval openweatherDataRetrieval;
     private final AccuweatherDataRetrieval accuweatherDataRetrieval;
     private final WeatherstackDataRetrieval weatherstackDataRetrieval;
@@ -42,7 +41,7 @@ public class WeatherApplicationController {
     public boolean getDisastersByDate(List<WeatherOpenweather> openweatherDisasters, Timestamp date,
                                              List<WeatherAccuweather> accuweatherDisasters,
                                              List<WeatherWeatherstack> weatherstackDisasters) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
 
             openweatherDisasters.addAll(session.createQuery("FROM WeatherOpenweather WHERE date= :date ", WeatherOpenweather.class)
                     .setParameter("date", date)
@@ -64,7 +63,7 @@ public class WeatherApplicationController {
     public boolean getDisastersByName(List<WeatherOpenweather> openweatherDisasters, String disasterName,
                                              List<WeatherAccuweather> accuweatherDisasters,
                                              List<WeatherWeatherstack> weatherstackDisasters) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
 
             openweatherDisasters.addAll(session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= :naturalDisaster", WeatherOpenweather.class)
                     .setParameter("naturalDisaster", disasterName)
@@ -87,7 +86,7 @@ public class WeatherApplicationController {
     public boolean getDisastersByCityName(List<WeatherOpenweather> openweatherDisasters, String cityName,
                                                  List<WeatherAccuweather> accuweatherDisasters,
                                                  List<WeatherWeatherstack> weatherstackDisasters) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
 
             openweatherDisasters.addAll(session.createQuery("FROM WeatherOpenweather WHERE cityName = :cityName", WeatherOpenweather.class)
                     .setParameter("cityName", cityName)
@@ -111,7 +110,7 @@ public class WeatherApplicationController {
     public boolean getDisastersByCountryName(List<WeatherOpenweather> openweatherDisasters, String countryName,
                                                     List<WeatherAccuweather> accuweatherDisasters,
                                                     List<WeatherWeatherstack> weatherstackDisasters, String[] words, StringBuilder displayStringBuilder) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
             for (String word : words) {
                 if (!word.isEmpty()) {
                     String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
@@ -119,7 +118,7 @@ public class WeatherApplicationController {
                 }
             }
 
-            String countryCode = countryCodeConverter.convertCountryNameToCode(countryName);
+            String countryCode = CountryCodeConverter.convertCountryNameToCode(countryName);
             System.out.println(countryCode);
 
             openweatherDisasters.addAll(session.createQuery("FROM WeatherOpenweather WHERE countryName = :countryCode", WeatherOpenweather.class)

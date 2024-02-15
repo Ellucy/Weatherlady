@@ -1,4 +1,4 @@
-package com.handlers;
+package com.util;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class DateConverter {
 
-    public Timestamp convertStringToTimestamp(String dateString) {
+    public static Timestamp convertStringToTimestamp(String dateString) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date parsedDate = dateFormat.parse(dateString);

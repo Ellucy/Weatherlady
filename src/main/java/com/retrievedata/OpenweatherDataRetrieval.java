@@ -20,10 +20,7 @@ public class OpenweatherDataRetrieval {
     }
 
     public void downloadAndSetWeatherData(String cityName, String disaster, String description) {
-     //APIConnectionController apiConnection; this variable should be assigned in the constructor
-        // , and it should be used in like apiConnection.downloadWeatherData.. or apiConnection.saveWeatherData
 
-        //Create a constructor with APIConnectionController parameter
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "%20");
         String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric";
 
@@ -62,7 +59,6 @@ public class OpenweatherDataRetrieval {
 
             databaseConnector.saveWeatherData(weatherOpenweather);
 
-            System.out.println("Weather data inserted successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }

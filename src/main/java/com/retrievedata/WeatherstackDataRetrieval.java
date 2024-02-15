@@ -46,7 +46,6 @@ public class WeatherstackDataRetrieval {
             int windDegree = currentWeather.getInt("wind_degree");
             String windDirection = currentWeather.getString("wind_dir");
 
-
             // Create a WeatherWeatherstack object and populate it with the extracted data
             WeatherWeatherstack weather = new WeatherWeatherstack();
             weather.setCountryName(jsonResponse.getJSONObject("location").getString("country"));

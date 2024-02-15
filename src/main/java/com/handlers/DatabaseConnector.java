@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-
 public class DatabaseConnector {
 
     private final SessionFactory sessionFactory;
