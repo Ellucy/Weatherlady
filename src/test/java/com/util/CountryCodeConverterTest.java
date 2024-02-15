@@ -1,6 +1,5 @@
-package com.handlers;
+package com.util;
 
-import com.handlers.CountryCodeConverter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

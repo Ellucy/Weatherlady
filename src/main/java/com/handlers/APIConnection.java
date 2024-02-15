@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class APIConnection {
 
-    public static JSONObject downloadWeatherData(String url) throws IOException {
+    public JSONObject downloadWeatherData(String url) throws IOException {
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet getRequest = new HttpGet(url);

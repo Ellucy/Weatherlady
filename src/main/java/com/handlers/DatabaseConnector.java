@@ -5,12 +5,15 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-
 public class DatabaseConnector {
 
-    private static final SessionFactory sessionFactory = SessionFactoryProvider.getSessionFactory();
+    private final SessionFactory sessionFactory;
 
-    public static <T extends WeatherData> void saveWeatherData(T weatherData) {
+    public DatabaseConnector() {
+        this.sessionFactory = SessionFactoryProvider.getSessionFactory();
+    }
+
+    public  <T extends WeatherData> void saveWeatherData(T weatherData) {
 
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();

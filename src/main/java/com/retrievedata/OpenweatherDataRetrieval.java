@@ -10,14 +10,23 @@ import java.util.Date;
 
 public class OpenweatherDataRetrieval {
 
-    public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) {
+    private final DatabaseConnector databaseConnector;
+    private final APIConnection apiConnection;
+    private final String owApiKey;
+    public OpenweatherDataRetrieval(DatabaseConnector databaseConnector) {
+        this.databaseConnector = databaseConnector;
+        this.apiConnection = new APIConnection();
+        this.owApiKey = System.getenv("OW_API_KEY");
+    }
+
+    public void downloadAndSetWeatherData(String cityName, String disaster, String description) {
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "%20");
         String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric";
 
         try {
 
-            JSONObject jsonData = APIConnection.downloadWeatherData(String.format(API_URL, transformedInput, apiKey));
+            JSONObject jsonData = apiConnection.downloadWeatherData(String.format(API_URL, transformedInput, owApiKey));
 
             assert jsonData != null;
             String countryName = jsonData.getJSONObject("sys").getString("country");
@@ -48,9 +57,8 @@ public class OpenweatherDataRetrieval {
             weatherOpenweather.setNaturalDisaster(disaster);
             weatherOpenweather.setDescription(description);
 
-            DatabaseConnector.saveWeatherData(weatherOpenweather);
+            databaseConnector.saveWeatherData(weatherOpenweather);
 
-            System.out.println("Weather data inserted successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }

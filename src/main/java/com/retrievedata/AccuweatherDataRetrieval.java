@@ -10,20 +10,29 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class AccuweatherDataRetrieval {
 
-    public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
+    private final DatabaseConnector databaseConnector;
+    private final APIConnection apiConnection;
+    private final String awApiKey;
+
+    public AccuweatherDataRetrieval(DatabaseConnector databaseConnector) {
+        this.databaseConnector = databaseConnector;
+        this.apiConnection = new APIConnection();
+        this.awApiKey = System.getenv("AW_API_KEY");
+    }
+
+    public void downloadAndSetWeatherData(String cityName, String disaster, String description) throws IOException {
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
-        AccuweatherLocationDetails locationDetails = AccuweatherLocationHandler.getLocationDetails(apiKey, transformedInput);
+        AccuweatherLocationDetails locationDetails = AccuweatherLocationHandler.getLocationDetails(awApiKey, transformedInput);
 
         String locationKey = locationDetails.getLocationKey();
-        String accuweatherOneDayUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/" + locationKey + "?apikey=" + apiKey + "&details=true";
+        String accuweatherOneDayUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/" + locationKey + "?apikey=" + awApiKey + "&details=true";
 
         try {
 
-            JSONObject jsonResponse = APIConnection.downloadWeatherData(accuweatherOneDayUrl);
+            JSONObject jsonResponse = apiConnection.downloadWeatherData(accuweatherOneDayUrl);
 
             assert jsonResponse != null;
             JSONObject forecast = jsonResponse.getJSONArray("DailyForecasts").getJSONObject(0);
@@ -69,7 +78,7 @@ public class AccuweatherDataRetrieval {
             weather.setWindSpeed(windSpeed);
 
             // Save Weather entity to the database
-            DatabaseConnector.saveWeatherData(weather);
+            databaseConnector.saveWeatherData(weather);
 
         } catch (Exception e) {
             e.printStackTrace();

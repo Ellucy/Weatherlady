@@ -1,5 +1,6 @@
 package com.handlers;
 
+import com.util.CountryCodeConverter;
 import com.entities.WeatherAccuweather;
 import com.entities.WeatherOpenweather;
 import com.entities.WeatherWeatherstack;
@@ -8,7 +9,6 @@ import com.retrievedata.OpenweatherDataRetrieval;
 import com.retrievedata.WeatherstackDataRetrieval;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -16,26 +16,31 @@ import java.util.List;
 
 public class WeatherApplicationController {
 
-    private static final String awApiKey = System.getenv("AW_API_KEY");
-    private static final String wsApiKey = System.getenv("WS_API_KEY");
-    private static final String owApiKey = System.getenv("OW_API_KEY");
+    private final OpenweatherDataRetrieval openweatherDataRetrieval;
+    private final AccuweatherDataRetrieval accuweatherDataRetrieval;
+    private final WeatherstackDataRetrieval weatherstackDataRetrieval;
 
-    private static final SessionFactory sessionFactory = SessionFactoryProvider.getSessionFactory();
+    public WeatherApplicationController() {
+        DatabaseConnector databaseConnector = new DatabaseConnector();
+        this.openweatherDataRetrieval = new OpenweatherDataRetrieval(databaseConnector);
+        this.accuweatherDataRetrieval = new AccuweatherDataRetrieval(databaseConnector);
+        this.weatherstackDataRetrieval = new WeatherstackDataRetrieval(databaseConnector);
+    }
 
-    public static void addingNaturalDisaster(String cityName, String disaster, String description) {
+    public void addingNaturalDisaster(String cityName, String disaster, String description) {
         try {
-            OpenweatherDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, owApiKey);
-            AccuweatherDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, awApiKey);
-            WeatherstackDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description, wsApiKey);
+            openweatherDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description);
+            accuweatherDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description);
+            weatherstackDataRetrieval.downloadAndSetWeatherData(cityName, disaster, description);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static boolean getDisastersByDate(List<WeatherOpenweather> openweatherDisasters, Timestamp date,
+    public boolean getDisastersByDate(List<WeatherOpenweather> openweatherDisasters, Timestamp date,
                                              List<WeatherAccuweather> accuweatherDisasters,
                                              List<WeatherWeatherstack> weatherstackDisasters) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
 
             openweatherDisasters.addAll(session.createQuery("FROM WeatherOpenweather WHERE date= :date ", WeatherOpenweather.class)
                     .setParameter("date", date)
@@ -54,10 +59,10 @@ public class WeatherApplicationController {
         }
     }
 
-    public static boolean getDisastersByName(List<WeatherOpenweather> openweatherDisasters, String disasterName,
+    public boolean getDisastersByName(List<WeatherOpenweather> openweatherDisasters, String disasterName,
                                              List<WeatherAccuweather> accuweatherDisasters,
                                              List<WeatherWeatherstack> weatherstackDisasters) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
 
             openweatherDisasters.addAll(session.createQuery("FROM WeatherOpenweather WHERE naturalDisaster= :naturalDisaster", WeatherOpenweather.class)
                     .setParameter("naturalDisaster", disasterName)
@@ -77,10 +82,10 @@ public class WeatherApplicationController {
         }
     }
 
-    public static boolean getDisastersByCityName(List<WeatherOpenweather> openweatherDisasters, String cityName,
+    public boolean getDisastersByCityName(List<WeatherOpenweather> openweatherDisasters, String cityName,
                                                  List<WeatherAccuweather> accuweatherDisasters,
                                                  List<WeatherWeatherstack> weatherstackDisasters) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
 
             openweatherDisasters.addAll(session.createQuery("FROM WeatherOpenweather WHERE cityName = :cityName", WeatherOpenweather.class)
                     .setParameter("cityName", cityName)
@@ -101,10 +106,10 @@ public class WeatherApplicationController {
         }
     }
 
-    public static boolean getDisastersByCountryName(List<WeatherOpenweather> openweatherDisasters, String countryName,
+    public boolean getDisastersByCountryName(List<WeatherOpenweather> openweatherDisasters, String countryName,
                                                     List<WeatherAccuweather> accuweatherDisasters,
                                                     List<WeatherWeatherstack> weatherstackDisasters, String[] words, StringBuilder displayStringBuilder) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
             for (String word : words) {
                 if (!word.isEmpty()) {
                     String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
