@@ -59,4 +59,11 @@ public class WeatherstackDataRetrievalTest {
         assertEquals(40.712, savedWeather.getLatitude(), 0.001);
         assertEquals(-74.006, savedWeather.getLongitude(), 0.001);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+
+    public void testDownloadAndSetWeatherData_NullCityName() throws IOException {
+
+        WeatherstackDataRetrieval.downloadAndSetWeatherData(null, "Hurricane", "Category 5 hurricane", "api_key");
+    }
 }
