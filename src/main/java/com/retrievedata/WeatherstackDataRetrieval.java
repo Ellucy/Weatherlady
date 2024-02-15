@@ -10,7 +10,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class WeatherstackDataRetrieval {
+
     public static void downloadAndSetWeatherData(String cityName, String disaster, String description, String apiKey) throws IOException {
+
+        if (cityName == null) {
+            throw new IllegalArgumentException("City name cannot be null");
+        }
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "%20");
         String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + apiKey + "&query=" + transformedInput;
@@ -41,7 +46,7 @@ public class WeatherstackDataRetrieval {
             weather.setLongitude(jsonResponse.getJSONObject("location").getDouble("lon"));
 
             long dateLong = jsonResponse.getJSONObject("location").getLong("localtime_epoch");
-            Date dateObject =  new Date(dateLong * 1000);
+            Date dateObject = new Date(dateLong * 1000);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String dateString = dateFormat.format(dateObject);
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
