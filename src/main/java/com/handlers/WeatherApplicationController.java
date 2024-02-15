@@ -19,13 +19,12 @@ public class WeatherApplicationController {
     private final OpenweatherDataRetrieval openweatherDataRetrieval;
     private final AccuweatherDataRetrieval accuweatherDataRetrieval;
     private final WeatherstackDataRetrieval weatherstackDataRetrieval;
-    private final CountryCodeConverter countryCodeConverter;
+
     public WeatherApplicationController() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
         this.openweatherDataRetrieval = new OpenweatherDataRetrieval(databaseConnector);
         this.accuweatherDataRetrieval = new AccuweatherDataRetrieval(databaseConnector);
         this.weatherstackDataRetrieval = new WeatherstackDataRetrieval(databaseConnector);
-        this.countryCodeConverter= new CountryCodeConverter();
     }
 
     public void addingNaturalDisaster(String cityName, String disaster, String description) {
