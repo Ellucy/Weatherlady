@@ -1,9 +1,6 @@
 package com.weather;
 
-import com.entities.DataEntity;
-import com.entities.WeatherAccuweather;
-import com.entities.WeatherOpenweather;
-import com.entities.WeatherWeatherstack;
+import com.entities.*;
 import com.util.DateConverter;
 import com.handlers.WeatherApplicationController;
 
@@ -172,15 +169,32 @@ public class WeatherApplication {
         String longitudeDirection = entity.getLongitude() >= 0 ? "E" : "W";
 
         System.out.println("Event: " + entity.getNaturalDisaster() + " (" + entity.getDescription() + ")"
-                + "\n\tLocation: " + entity.getCityName() + ", " + entity.getCountryName()
+                + "\n\tLocation: " + entity.getCityName() + ", " + entity.getCountryName() + ", " + printRegionName(entity)
                 + " lat/lon: " + Math.abs(entity.getLatitude()) + "° " + latitudeDirection + ", " +
                 Math.abs(entity.getLongitude()) + "° " + longitudeDirection
                 + "\n\tDate: " + formattedDate
                 + "\n\t\tTemperature: " + entity.getTemperature() + "°C"
-                + "\n\t\tPressure: " + entity.getPressure()
+                + printPressure(entity)
                 + "\n\t\tHumidity: " + entity.getHumidity()
                 + "\n\t\tWind: Speed: " + entity.getWindSpeed() + ", Direction: " + entity.getWindDirection()
                 + "\n");
+    }
+    private static String printRegionName(DataEntity dataEntity) {
+        if (dataEntity instanceof WeatherAccuweather weatherAccuweather) {
+            return  weatherAccuweather.getRegionName();
+        } else if (dataEntity instanceof WeatherWeatherstack weatherWeatherstack){
+            return weatherWeatherstack.getRegionName();
+        }
+        return "";
+    }
+    private static String printPressure(DataEntity dataEntity) {
+        String pressure = "\n\t\tPressure: ";
+        if (dataEntity instanceof WeatherOpenweather weatherOpenweather) {
+            return  pressure.concat(weatherOpenweather.getPressure().toString());
+        } else if (dataEntity instanceof WeatherWeatherstack weatherWeatherstack){
+            return pressure.concat(weatherWeatherstack.getPressure().toString());
+        }
+        return "";
     }
 
     private static void displayDisasters(String displayString, List<WeatherOpenweather> openweatherDisasters,

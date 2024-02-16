@@ -18,6 +18,7 @@ public class AccuweatherDataRetrieval {
     private APIConnection apiConnection;
     private final String awApiKey;
 
+
     public AccuweatherDataRetrieval(DatabaseConnector databaseConnector, String awApiKey) {
         this.databaseConnector = databaseConnector;
         this.apiConnection = new APIConnection();
@@ -25,9 +26,10 @@ public class AccuweatherDataRetrieval {
     }
 
     public void downloadAndSetWeatherData(String cityName, String disaster, String description) throws IOException {
+       AccuweatherLocationHandler accuweatherLocationHandler = new AccuweatherLocationHandler();
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
-        AccuweatherLocationDetails locationDetails = AccuweatherLocationHandler.getLocationDetails(awApiKey, transformedInput);
+        AccuweatherLocationDetails locationDetails = accuweatherLocationHandler.getLocationDetails(awApiKey, transformedInput);
 
         String locationKey = locationDetails.getLocationKey();
         String accuweatherOneDayUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/" + locationKey + "?apikey=" + awApiKey + "&details=true";

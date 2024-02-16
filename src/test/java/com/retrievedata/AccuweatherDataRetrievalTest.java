@@ -1,18 +1,21 @@
 package com.retrievedata;
 
 import com.entities.WeatherAccuweather;
+import com.entities.WeatherWeatherstack;
 import com.handlers.APIConnection;
 import com.handlers.DatabaseConnector;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.Objects;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -27,6 +30,9 @@ public class AccuweatherDataRetrievalTest {
 
     @Mock
     private AccuweatherDataRetrieval accuweatherDataRetrieval;
+
+    @Mock
+    private AccuweatherLocationHandler accuweatherLocationHandler;
 
     @Before
     public void setUp() {
@@ -55,26 +61,22 @@ public class AccuweatherDataRetrievalTest {
         forecast.put("Day", day);
         jsonResponse.put("DailyForecasts", new JSONObject[]{forecast});
 
+
         when(apiConnection.downloadWeatherData(anyString())).thenReturn(jsonResponse);
 
+
         accuweatherDataRetrieval.downloadAndSetWeatherData("New York", "Earthquake", "Earthquake RS 5");
+        ArgumentCaptor<WeatherAccuweather> captor = ArgumentCaptor.forClass(WeatherAccuweather.class);
+        verify(databaseConnector, times(1)).saveWeatherData(captor.capture());
+        WeatherAccuweather savedWeather = captor.getValue();
+        assertEquals("United States of America", savedWeather.getCountryName());
+        assertEquals("New York", savedWeather.getRegionName());
+        assertEquals("New York", savedWeather.getCityName());
+        assertEquals(40.7128, savedWeather.getLatitude(), 0.001);
+        assertEquals(-74.006, savedWeather.getLongitude(), 0.001);
+        assertEquals("Hurricane", savedWeather.getNaturalDisaster());
 
-        WeatherAccuweather weatherAccuweather = new WeatherAccuweather();
-        weatherAccuweather.setNaturalDisaster("Earthquake");
-        weatherAccuweather.setDescription("Earthquake RS 5");
-        weatherAccuweather.setTemperature(30.5);
-        weatherAccuweather.setHumidity(50);
-        weatherAccuweather.setWindDirection("South" + " (" + 180 + "°)");
-        weatherAccuweather.setWindSpeed(10.0);
 
-        verify(databaseConnector).saveWeatherData(argThat(dataEntity ->
-                Objects.equals(dataEntity.getNaturalDisaster(), weatherAccuweather.getNaturalDisaster()) &&
-                        Objects.equals(dataEntity.getDescription(), weatherAccuweather.getDescription()) &&
-                        Objects.equals(dataEntity.getTemperature(), weatherAccuweather.getTemperature()) &&
-                        Objects.equals(dataEntity.getHumidity(), weatherAccuweather.getHumidity()) &&
-                        Objects.equals(dataEntity.getWindDirection(), weatherAccuweather.getWindDirection()) &&
-                        Objects.equals(dataEntity.getWindSpeed(), weatherAccuweather.getWindSpeed())
-        ));
     }
 
     @Test(expected = NullPointerException.class)

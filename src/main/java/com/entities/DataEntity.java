@@ -2,30 +2,28 @@ package com.entities;
 
 import java.util.Date;
 
-public abstract class DataEntity {
+public interface DataEntity {
 
-    public abstract String getNaturalDisaster();
+    String getNaturalDisaster();
 
-    public abstract String getDescription();
+    String getDescription();
 
-    public abstract String getCountryName();
+    String getCountryName();
 
-    public abstract String getCityName();
+    String getCityName();
 
-    public abstract Double getLatitude();
+    Double getLatitude();
 
-    public abstract Double getLongitude();
+    Double getLongitude();
 
-    public abstract Date getDate();
+    Date getDate();
 
-    public abstract Double getTemperature();
+    Double getTemperature();
 
-    public abstract Integer getPressure();
+    Integer getHumidity();
 
-    public abstract Integer getHumidity();
+    Double getWindSpeed();
 
-    public abstract Double getWindSpeed();
-
-    public abstract String getWindDirection();
+    String getWindDirection();
 
 }
