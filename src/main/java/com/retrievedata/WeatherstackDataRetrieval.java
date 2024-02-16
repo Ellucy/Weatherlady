@@ -3,22 +3,26 @@ package com.retrievedata;
 import com.entities.WeatherWeatherstack;
 import com.handlers.APIConnection;
 import com.handlers.DatabaseConnector;
+import lombok.Data;
+import lombok.Getter;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Data
+@Getter
 public class WeatherstackDataRetrieval {
 
     private final DatabaseConnector databaseConnector;
-    private final APIConnection apiConnection;
+    private APIConnection apiConnection;
     private final String wsApiKey;
 
-    public WeatherstackDataRetrieval(DatabaseConnector databaseConnector) {
+    public WeatherstackDataRetrieval(DatabaseConnector databaseConnector, String wsApiKey) {
         this.databaseConnector = databaseConnector;
         this.apiConnection = new APIConnection();
-        this.wsApiKey = System.getenv("WS_API_KEY");
+        this.wsApiKey = wsApiKey;
     }
 
     public void downloadAndSetWeatherData(String cityName, String disaster, String description) throws IOException {
@@ -28,11 +32,11 @@ public class WeatherstackDataRetrieval {
         }
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "%20");
-        String weatherstackResponse = "http://api.weatherstack.com/current?access_key=" + wsApiKey + "&query=" + transformedInput;
+        String weatherstackUrl = "http://api.weatherstack.com/current?access_key=" + wsApiKey + "&query=" + transformedInput;
 
         try {
 
-            JSONObject jsonResponse = apiConnection.downloadWeatherData(weatherstackResponse);
+            JSONObject jsonResponse = apiConnection.downloadWeatherData(weatherstackUrl);
 
             // Extracting current weather data
             assert jsonResponse != null;

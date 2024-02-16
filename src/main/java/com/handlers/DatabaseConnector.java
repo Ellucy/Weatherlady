@@ -1,6 +1,6 @@
 package com.handlers;
 
-import com.entities.WeatherData;
+import com.entities.DataEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -13,7 +13,7 @@ public class DatabaseConnector {
         this.sessionFactory = SessionFactoryProvider.getSessionFactory();
     }
 
-    public  <T extends WeatherData> void saveWeatherData(T weatherData) {
+    public  <T extends DataEntity> void saveWeatherData(T weatherData) {
 
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();

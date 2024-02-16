@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "weatherweatherstack")
-public class WeatherWeatherstack extends WeatherData implements DataEntity {
+public class WeatherWeatherstack implements DataEntity {
 
     @Id
     @GeneratedValue
