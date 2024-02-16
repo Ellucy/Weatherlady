@@ -1,52 +1,74 @@
 package com.retrievedata;
 
-import com.handlers.APIConnection;
-
-import com.handlers.DatabaseConnector;
-import org.json.JSONObject;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.io.IOException;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import com.entities.WeatherOpenweather;
+import com.handlers.APIConnection;
+import com.handlers.DatabaseConnector;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
 
-@RunWith(MockitoJUnitRunner.class)
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.io.IOException;
+import java.util.Objects;
+
 public class OpenweatherDataRetrievalTest {
-
-    @Mock
-    private APIConnection apiConnection;
 
     @Mock
     private DatabaseConnector databaseConnector;
 
     @Mock
-    private OpenweatherDataRetrieval openweatherDataRetrieval;
-    @BeforeEach
+    private APIConnection apiConnection;
 
+    @Mock
+    private OpenweatherDataRetrieval dataRetrieval;
 
-    @Test
-    public void testDownloadAndSetWeatherData() throws IOException {
+    @Before
+    public void setUp() {
 
-        String jsonResponse = "{\"sys\":{\"country\":\"US\"},\"coord\":{\"lat\":40.7128,\"lon\":-74.0060},\"dt\":1644884400,\"main\":{\"temp\":10.0,\"pressure\":1013,\"humidity\":50},\"wind\":{\"deg\":180,\"speed\":5.0}}";
-
-        when(apiConnection.downloadWeatherData(anyString())).thenReturn(new JSONObject(jsonResponse));
-
-        doNothing().when(databaseConnector).saveWeatherData(any());
-
-
-        openweatherDataRetrieval.downloadAndSetWeatherData("New york", "Earthquake", "Earthquake RS 7");
-        verify(databaseConnector, times(1)).saveWeatherData(any());
+        MockitoAnnotations.initMocks(this);
+        dataRetrieval = new OpenweatherDataRetrieval(databaseConnector, "owapikey");
+        dataRetrieval.setApiConnection(apiConnection);
 
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testDownloadAndSetWeatherData_NullCityName() throws IOException {
+     @Test
+    public void testDownloadAndSetWeatherData() throws IOException {
 
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("sys", new JSONObject().put("country", "US"));
+        jsonData.put("coord", new JSONObject().put("lat", 40.7128).put("lon", -74.0060));
+        jsonData.put("dt", 1613507761);
+        jsonData.put("main", new JSONObject().put("temp", 20.5).put("pressure", 1013).put("humidity", 50));
+        jsonData.put("wind", new JSONObject().put("deg", 180).put("speed", 5.5));
+
+        when(apiConnection.downloadWeatherData(anyString())).thenReturn(jsonData);
+
+        dataRetrieval.downloadAndSetWeatherData("New York", "Earthquake", "Earthquake RS 5");
+
+         WeatherOpenweather weatherOpenweather = new WeatherOpenweather();
+         weatherOpenweather.setCityName("New York");
+         weatherOpenweather.setCountryName("US");
+         weatherOpenweather.setLatitude(40.7128);
+         weatherOpenweather.setLongitude(-74.0060);
+         weatherOpenweather.setDescription("Earthquake RS 5");
+
+         verify(databaseConnector).saveWeatherData(argThat(weatherData ->
+                 Objects.equals(weatherOpenweather.getCityName(), weatherOpenweather.getCityName()) &&
+                         Objects.equals(weatherOpenweather.getCountryName(), weatherOpenweather.getCountryName()) &&
+                         Objects.equals(weatherOpenweather.getLatitude(), weatherOpenweather.getLatitude()) &&
+                         Objects.equals(weatherOpenweather.getLongitude(), weatherOpenweather.getLongitude()) &&
+                         Objects.equals(weatherOpenweather.getDescription(), weatherOpenweather.getDescription())
+         ));
+    }
+    @Test(expected = NullPointerException.class)
+    public void testDownloadAndSetWeatherData_NullCityName() {
+        OpenweatherDataRetrieval openweatherDataRetrieval = new OpenweatherDataRetrieval(databaseConnector, "dummyOwApiKey");
         openweatherDataRetrieval.downloadAndSetWeatherData(null, "Hurricane", "Category 5 hurricane");
     }
 }
+
