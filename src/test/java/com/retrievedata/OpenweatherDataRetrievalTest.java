@@ -10,12 +10,13 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.util.Objects;
-
+@RunWith(MockitoJUnitRunner.class)
 public class OpenweatherDataRetrievalTest {
 
     @Mock
@@ -30,7 +31,6 @@ public class OpenweatherDataRetrievalTest {
     @Before
     public void setUp() {
 
-        MockitoAnnotations.initMocks(this);
         dataRetrieval = new OpenweatherDataRetrieval(databaseConnector, "owapikey");
         dataRetrieval.setApiConnection(apiConnection);
 
@@ -57,12 +57,12 @@ public class OpenweatherDataRetrievalTest {
          weatherOpenweather.setLongitude(-74.0060);
          weatherOpenweather.setDescription("Earthquake RS 5");
 
-         verify(databaseConnector).saveWeatherData(argThat(weatherData ->
-                 Objects.equals(weatherOpenweather.getCityName(), weatherOpenweather.getCityName()) &&
-                         Objects.equals(weatherOpenweather.getCountryName(), weatherOpenweather.getCountryName()) &&
-                         Objects.equals(weatherOpenweather.getLatitude(), weatherOpenweather.getLatitude()) &&
-                         Objects.equals(weatherOpenweather.getLongitude(), weatherOpenweather.getLongitude()) &&
-                         Objects.equals(weatherOpenweather.getDescription(), weatherOpenweather.getDescription())
+         verify(databaseConnector).saveWeatherData(argThat(dataEntity ->
+                 Objects.equals(dataEntity.getCityName(), weatherOpenweather.getCityName()) &&
+                         Objects.equals(dataEntity.getCountryName(), weatherOpenweather.getCountryName()) &&
+                         Objects.equals(dataEntity.getLatitude(), weatherOpenweather.getLatitude()) &&
+                         Objects.equals(dataEntity.getLongitude(), weatherOpenweather.getLongitude()) &&
+                         Objects.equals(dataEntity.getDescription(), weatherOpenweather.getDescription())
          ));
     }
     @Test(expected = NullPointerException.class)
