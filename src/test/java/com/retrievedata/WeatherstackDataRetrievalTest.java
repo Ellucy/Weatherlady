@@ -4,20 +4,19 @@ import com.entities.WeatherWeatherstack;
 import com.handlers.APIConnection;
 import com.handlers.DatabaseConnector;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.util.Objects;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
 public class WeatherstackDataRetrievalTest {
 
     @Mock
@@ -26,37 +25,58 @@ public class WeatherstackDataRetrievalTest {
     @Mock
     private DatabaseConnector databaseConnector;
 
-    @InjectMocks
-    private WeatherstackDataRetrieval weatherstackDataRetrieval;
+    @Mock
+    private WeatherstackDataRetrieval dataRetrieval;
+
+    @Before
+    public void setUp() {
+
+        MockitoAnnotations.initMocks(this);
+        dataRetrieval = new WeatherstackDataRetrieval(databaseConnector, "wsapikey");
+        dataRetrieval.setApiConnection(apiConnection);
+
+    }
 
     @Test
     public void testDownloadAndSetWeatherData() throws IOException {
-        // Mock JSON response
-        String jsonResponse = "{\"location\":{\"country\":\"US\",\"region\":\"NY\",\"name\":\"New York\",\"lat\":40.712,\"lon\":-74.006,\"localtime_epoch\":1645003200},\"current\":{\"temperature\":10,\"pressure\":1012,\"humidity\":80,\"wind_speed\":10,\"wind_degree\":180,\"wind_dir\":\"S\"}}";
 
-        when(apiConnection.downloadWeatherData(anyString())).thenReturn(new JSONObject(jsonResponse));
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("sys", new JSONObject().put("country", "United States of America"));
+        jsonData.put("coord", new JSONObject().put("lat", 40.7128).put("lon", -74.0060));
+        jsonData.put("main", new JSONObject().put("temp", 20.5).put("pressure", 1013).put("humidity", 50));
+        jsonData.put("wind", new JSONObject().put("deg", 180).put("speed", 5.5));
+
+        when(apiConnection.downloadWeatherData(anyString())).thenReturn(new JSONObject(jsonData));
 
         // Call the method under test
-        weatherstackDataRetrieval.downloadAndSetWeatherData("New York", "Hurricane", "Category 5 hurricane");
+        dataRetrieval.downloadAndSetWeatherData("New York", "Hurricane", "Category 5 hurricane");
 
-        // Verify that the data is saved to the database
-        ArgumentCaptor<WeatherWeatherstack> captor = ArgumentCaptor.forClass(WeatherWeatherstack.class);
-        verify(databaseConnector, times(1));
-        databaseConnector.saveWeatherData(captor.capture());
+        WeatherWeatherstack weatherWeatherstack = new WeatherWeatherstack();
+        weatherWeatherstack.setCityName("New York");
+        weatherWeatherstack.setCountryName("United States of America");
+        weatherWeatherstack.setLatitude(40.7128);
+        weatherWeatherstack.setLongitude(-74.0060);
+        weatherWeatherstack.setDescription("Category 5 hurricane");
 
-        // Assert on the saved WeatherWeatherstack object
-        WeatherWeatherstack savedWeather = captor.getValue();
-        assertEquals("United States of America", savedWeather.getCountryName());
-        assertEquals("New York", savedWeather.getRegionName());
-        assertEquals("New York", savedWeather.getCityName());
-        assertEquals(40.714, savedWeather.getLatitude(), 0.001);
-        assertEquals(-74.006, savedWeather.getLongitude(), 0.001);
+        System.out.println(weatherWeatherstack.getCityName());
+        System.out.println(weatherWeatherstack.getCountryName());
+        System.out.println(weatherWeatherstack.getLatitude());
+        System.out.println(weatherWeatherstack.getLongitude());
+        System.out.println(weatherWeatherstack.getDescription());
+
+        verify(databaseConnector).saveWeatherData(argThat(weatherData ->
+                Objects.equals("New York", weatherData.getCityName()) &&
+                        Objects.equals("United States of America", weatherData.getCountryName()) &&
+                        Objects.equals(40.7128, weatherData.getLatitude()) &&
+                        Objects.equals(-74.006, weatherData.getLongitude()) &&
+                        Objects.equals("Category 5 hurricane", weatherData.getDescription())
+        ));
     }
 
     @Test(expected = IllegalArgumentException.class)
 
     public void testDownloadAndSetWeatherData_NullCityName() throws IOException {
-
+        WeatherstackDataRetrieval weatherstackDataRetrieval = new WeatherstackDataRetrieval(databaseConnector, "api_key");
         weatherstackDataRetrieval.downloadAndSetWeatherData(null, "Hurricane", "Category 5 hurricane");
     }
 }
