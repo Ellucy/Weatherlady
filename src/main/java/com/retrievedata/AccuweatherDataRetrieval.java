@@ -3,6 +3,7 @@ package com.retrievedata;
 import com.entities.WeatherAccuweather;
 import com.handlers.APIConnection;
 import com.handlers.DatabaseConnector;
+import lombok.Data;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -10,16 +11,17 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Data
 public class AccuweatherDataRetrieval {
 
     private final DatabaseConnector databaseConnector;
-    private final APIConnection apiConnection;
+    private APIConnection apiConnection;
     private final String awApiKey;
 
-    public AccuweatherDataRetrieval(DatabaseConnector databaseConnector) {
+    public AccuweatherDataRetrieval(DatabaseConnector databaseConnector, String awApiKey) {
         this.databaseConnector = databaseConnector;
         this.apiConnection = new APIConnection();
-        this.awApiKey = System.getenv("AW_API_KEY");
+        this.awApiKey = awApiKey;
     }
 
     public void downloadAndSetWeatherData(String cityName, String disaster, String description) throws IOException {
