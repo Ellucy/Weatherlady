@@ -3,20 +3,21 @@ package com.retrievedata;
 import com.entities.WeatherOpenweather;
 import com.handlers.APIConnection;
 import com.handlers.DatabaseConnector;
+import lombok.Data;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+@Data
 public class OpenweatherDataRetrieval {
 
     private final DatabaseConnector databaseConnector;
-    private final APIConnection apiConnection;
+    private APIConnection apiConnection;
     private final String owApiKey;
-    public OpenweatherDataRetrieval(DatabaseConnector databaseConnector) {
+    public OpenweatherDataRetrieval(DatabaseConnector databaseConnector, String owApiKey) {
         this.databaseConnector = databaseConnector;
         this.apiConnection = new APIConnection();
-        this.owApiKey = System.getenv("OW_API_KEY");
+        this.owApiKey = owApiKey;
     }
 
     public void downloadAndSetWeatherData(String cityName, String disaster, String description) {

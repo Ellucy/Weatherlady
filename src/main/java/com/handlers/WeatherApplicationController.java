@@ -8,6 +8,7 @@ import com.retrievedata.AccuweatherDataRetrieval;
 import com.retrievedata.OpenweatherDataRetrieval;
 import com.retrievedata.WeatherstackDataRetrieval;
 
+import lombok.Data;
 import org.hibernate.Session;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class WeatherApplicationController {
 
     public WeatherApplicationController() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
-        this.openweatherDataRetrieval = new OpenweatherDataRetrieval(databaseConnector);
+        this.openweatherDataRetrieval = new OpenweatherDataRetrieval(databaseConnector, "owApiKey");
         this.accuweatherDataRetrieval = new AccuweatherDataRetrieval(databaseConnector);
         this.weatherstackDataRetrieval = new WeatherstackDataRetrieval(databaseConnector);
     }
