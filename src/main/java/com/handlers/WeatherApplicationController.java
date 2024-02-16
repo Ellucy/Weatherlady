@@ -23,9 +23,9 @@ public class WeatherApplicationController {
 
     public WeatherApplicationController() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
-        this.openweatherDataRetrieval = new OpenweatherDataRetrieval(databaseConnector, "93853d6652c1788783d7471059c2cad0");
-        this.accuweatherDataRetrieval = new AccuweatherDataRetrieval(databaseConnector, "Kglm3glts0z5lc4mPvj961hA7C07uq8A");
-        this.weatherstackDataRetrieval = new WeatherstackDataRetrieval(databaseConnector, "28e451ff2f6a2e9dd1ea442ecb2ad330");
+        this.openweatherDataRetrieval = new OpenweatherDataRetrieval(databaseConnector, "owApiKey");
+        this.accuweatherDataRetrieval = new AccuweatherDataRetrieval(databaseConnector, "awApiKey");
+        this.weatherstackDataRetrieval = new WeatherstackDataRetrieval(databaseConnector, "wsApiKey");
     }
 
     public void addingNaturalDisaster(String cityName, String disaster, String description) {
