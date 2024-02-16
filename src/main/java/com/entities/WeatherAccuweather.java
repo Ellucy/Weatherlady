@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "weatheraccuweather")
-public class WeatherAccuweather extends DataEntity {
+public class WeatherAccuweather extends WeatherData implements DataEntity{
 
     @Id
     @GeneratedValue
@@ -44,9 +44,6 @@ public class WeatherAccuweather extends DataEntity {
 
     @Column(name = "temperature")
     private Double temperature;
-
-    @Column(name = "pressure")
-    private Integer pressure;
 
     @Column(name = "humidity")
     private Integer humidity;

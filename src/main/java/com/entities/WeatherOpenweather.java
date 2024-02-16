@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "weatheropenweather")
-public class WeatherOpenweather extends DataEntity {
+public class WeatherOpenweather extends WeatherData implements DataEntity{
 
     @Id
     @GeneratedValue
@@ -38,7 +38,6 @@ public class WeatherOpenweather extends DataEntity {
     @NotNull(message = "Date cannot be null")
     @Column(name = "date")
     private Date date;
-
 
     @Column(name = "temperature")
     private Double temperature;
