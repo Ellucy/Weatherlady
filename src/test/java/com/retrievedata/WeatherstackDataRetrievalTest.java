@@ -7,10 +7,12 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -19,6 +21,7 @@ import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class WeatherstackDataRetrievalTest {
 
     @Mock
@@ -28,13 +31,12 @@ public class WeatherstackDataRetrievalTest {
     private DatabaseConnector databaseConnector;
 
     @InjectMocks
-    private WeatherstackDataRetrieval dataRetrieval;
+    private WeatherstackDataRetrieval weatherstackDataRetrieval;
 
     @Before
     public void setUp() {
-
-        MockitoAnnotations.initMocks(this);
-
+        weatherstackDataRetrieval = new WeatherstackDataRetrieval(databaseConnector, "wsapykey");
+        weatherstackDataRetrieval.setApiConnection(apiConnection);
     }
 
     @Test
@@ -63,7 +65,7 @@ public class WeatherstackDataRetrievalTest {
         when(apiConnection.downloadWeatherData(anyString())).thenReturn(jsonData);
 
         // Call the method under test
-        dataRetrieval.downloadAndSetWeatherData("New York", "Hurricane", "Category 5 hurricane");
+        weatherstackDataRetrieval.downloadAndSetWeatherData("New York", "Hurricane", "Category 5 hurricane");
 
         // Verify that the data is saved to the database
         ArgumentCaptor<WeatherWeatherstack> captor = ArgumentCaptor.forClass(WeatherWeatherstack.class);
@@ -76,6 +78,7 @@ public class WeatherstackDataRetrievalTest {
         assertEquals("New York", savedWeather.getCityName());
         assertEquals(40.7128, savedWeather.getLatitude(), 0.001);
         assertEquals(-74.006, savedWeather.getLongitude(), 0.001);
+        assertEquals("Hurricane", savedWeather.getNaturalDisaster());
     }
 
     @Test(expected = IllegalArgumentException.class)
