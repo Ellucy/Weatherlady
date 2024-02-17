@@ -39,16 +39,16 @@ public class OpenweatherDataRetrieval {
             int humidity = jsonData.getJSONObject("main").getInt("humidity");
             double windDirection = jsonData.getJSONObject("wind").getDouble("deg");
             double windSpeed = jsonData.getJSONObject("wind").getDouble("speed");
+            Date dateObject = new Date(dateLong * 1000);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = dateFormat.format(dateObject);
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
 
             WeatherOpenweather weatherOpenweather = new WeatherOpenweather();
             weatherOpenweather.setCountryName(countryName);
             weatherOpenweather.setCityName(cityName);
             weatherOpenweather.setLatitude(latitude);
             weatherOpenweather.setLongitude(longitude);
-            Date dateObject = new Date(dateLong * 1000);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String dateString = dateFormat.format(dateObject);
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
             weatherOpenweather.setDate(date);
             weatherOpenweather.setTemperature(temperature);
             weatherOpenweather.setPressure(pressure);
