@@ -8,7 +8,6 @@ import com.retrievedata.AccuweatherDataRetrieval;
 import com.retrievedata.OpenweatherDataRetrieval;
 import com.retrievedata.WeatherstackDataRetrieval;
 
-import lombok.Data;
 import org.hibernate.Session;
 
 import java.io.IOException;

@@ -49,6 +49,11 @@ public class WeatherstackDataRetrieval {
             int windSpeed = currentWeather.getInt("wind_speed");
             int windDegree = currentWeather.getInt("wind_degree");
             String windDirection = currentWeather.getString("wind_dir");
+            long dateLong = jsonResponse.getJSONObject("location").getLong("localtime_epoch");
+            Date dateObject = new Date(dateLong * 1000);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = dateFormat.format(dateObject);
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
 
             // Create a WeatherWeatherstack object and populate it with the extracted data
             WeatherWeatherstack weather = new WeatherWeatherstack();
@@ -57,14 +62,7 @@ public class WeatherstackDataRetrieval {
             weather.setCityName(jsonResponse.getJSONObject("location").getString("name"));
             weather.setLatitude(jsonResponse.getJSONObject("location").getDouble("lat"));
             weather.setLongitude(jsonResponse.getJSONObject("location").getDouble("lon"));
-
-            long dateLong = jsonResponse.getJSONObject("location").getLong("localtime_epoch");
-            Date dateObject = new Date(dateLong * 1000);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String dateString = dateFormat.format(dateObject);
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
             weather.setDate(date);
-
             weather.setTemperature((double) temperature);
             weather.setPressure(pressure);
             weather.setHumidity(humidity);
@@ -74,7 +72,6 @@ public class WeatherstackDataRetrieval {
             weather.setDescription(description);
 
             // Save the WeatherWeatherstack object to the database
-
             databaseConnector.saveWeatherData(weather);
 
         } catch (Exception e) {
