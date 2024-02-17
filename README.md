@@ -35,6 +35,7 @@ Users can also search for disasters that have occurred by:
 - Data Processing: Parse JSON responses to extract relevant weather parameters such as temperature, 
 humidity, wind speed, and direction.
 - Data Storage: Store retrieved weather data in a relational database using Hibernate ORM.
+- Data Search: Allow users to search for past disasters by date, disaster name, city, or country directly from the terminal interface.
 
 ## Installation
 
