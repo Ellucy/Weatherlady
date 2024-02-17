@@ -20,12 +20,15 @@ public class WeatherApplicationController {
     private final OpenweatherDataRetrieval openweatherDataRetrieval;
     private final AccuweatherDataRetrieval accuweatherDataRetrieval;
     private final WeatherstackDataRetrieval weatherstackDataRetrieval;
+    private String awApiKey = System.getenv("AW_API_KEY");
+    private String wsApiKey = System.getenv("WS_API_KEY");
+    private String owApiKey = System.getenv("OW_API_KEY");
 
     public WeatherApplicationController() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
-        this.openweatherDataRetrieval = new OpenweatherDataRetrieval(databaseConnector, "owApiKey");
-        this.accuweatherDataRetrieval = new AccuweatherDataRetrieval(databaseConnector, "awApiKey");
-        this.weatherstackDataRetrieval = new WeatherstackDataRetrieval(databaseConnector, "wsApiKey");
+        this.openweatherDataRetrieval = new OpenweatherDataRetrieval(databaseConnector, owApiKey);
+        this.accuweatherDataRetrieval = new AccuweatherDataRetrieval(databaseConnector, awApiKey);
+        this.weatherstackDataRetrieval = new WeatherstackDataRetrieval(databaseConnector, wsApiKey);
     }
 
     public void addingNaturalDisaster(String cityName, String disaster, String description) {
