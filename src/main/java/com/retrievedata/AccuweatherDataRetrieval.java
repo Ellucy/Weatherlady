@@ -13,20 +13,19 @@ import java.util.Date;
 
 @Data
 public class AccuweatherDataRetrieval {
-
+    private final String awApiKey;
     private final DatabaseConnector databaseConnector;
     private APIConnection apiConnection;
-    private final String awApiKey;
-
+    private AccuweatherLocationHandler accuweatherLocationHandler;
 
     public AccuweatherDataRetrieval(DatabaseConnector databaseConnector, String awApiKey) {
         this.databaseConnector = databaseConnector;
         this.apiConnection = new APIConnection();
+        this.accuweatherLocationHandler = new AccuweatherLocationHandler();
         this.awApiKey = awApiKey;
     }
 
     public void downloadAndSetWeatherData(String cityName, String disaster, String description) throws IOException {
-       AccuweatherLocationHandler accuweatherLocationHandler = new AccuweatherLocationHandler();
 
         String transformedInput = cityName.toLowerCase().replaceAll("\\s+", "");
         AccuweatherLocationDetails locationDetails = accuweatherLocationHandler.getLocationDetails(awApiKey, transformedInput);

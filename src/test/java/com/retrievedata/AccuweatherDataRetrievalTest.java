@@ -4,11 +4,13 @@ import com.entities.WeatherAccuweather;
 import com.entities.WeatherWeatherstack;
 import com.handlers.APIConnection;
 import com.handlers.DatabaseConnector;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -28,54 +30,45 @@ public class AccuweatherDataRetrievalTest {
     @Mock
     private APIConnection apiConnection;
 
-    @Mock
+    @InjectMocks
     private AccuweatherDataRetrieval accuweatherDataRetrieval;
 
     @Mock
     private AccuweatherLocationHandler accuweatherLocationHandler;
 
+    @Mock
+    private AccuweatherLocationDetails accuweatherLocationDetails;
+
     @Before
     public void setUp() {
-
         accuweatherDataRetrieval = new AccuweatherDataRetrieval(databaseConnector, "awApikey");
         accuweatherDataRetrieval.setApiConnection(apiConnection);
-
+        accuweatherDataRetrieval.setAccuweatherLocationHandler(accuweatherLocationHandler);
     }
 
     @Test
     public void testDownloadAndSetWeatherData() throws IOException {
 
-        JSONObject jsonResponse = new JSONObject();
-        JSONObject forecast = new JSONObject();
-        JSONObject temperature = new JSONObject();
-        temperature.put("Minimum", new JSONObject().put("Value", 20.0));
-        temperature.put("Maximum", new JSONObject().put("Value", 30.0));
+        String jsonDataRetrieval = "{\"DailyForecasts\":[{\"Date\":\"2024-02-08T07:00:00-05:00\",\"Temperature\":{\"Minimum\":{\"Value\":40.0,\"Unit\":\"F\",\"UnitType\":18},\"Maximum\":{\"Value\":53.0,\"Unit\":\"F\",\"UnitType\":18}},\"Day\":{\"Wind\":{\"Speed\":{\"Value\":4.6,\"Unit\":\"mi/h\",\"UnitType\":9},\"Direction\":{\"Degrees\":101,\"Localized\":\"E\",\"English\":\"E\"}},\"RelativeHumidity\":{\"Minimum\":29,\"Maximum\":55,\"Average\":38}}}]}";
 
-        forecast.put("Temperature", temperature);
-        JSONObject day = new JSONObject();
-        day.put("RelativeHumidity", new JSONObject().put("Average", 50));
-        JSONObject wind = new JSONObject();
-        wind.put("Speed", new JSONObject().put("Value", 10.0));
-        wind.put("Direction", new JSONObject().put("Degrees", 180).put("Localized", "South"));
-        day.put("Wind", wind);
-        forecast.put("Day", day);
-        jsonResponse.put("DailyForecasts", new JSONObject[]{forecast});
+        JSONObject jsonResponse = new JSONObject(jsonDataRetrieval);
 
+        when(accuweatherLocationHandler.getLocationDetails(anyString(), anyString())).thenReturn(accuweatherLocationDetails);
+        when(accuweatherLocationDetails.getLocationKey()).thenReturn("locationkey");
 
         when(apiConnection.downloadWeatherData(anyString())).thenReturn(jsonResponse);
-
 
         accuweatherDataRetrieval.downloadAndSetWeatherData("New York", "Earthquake", "Earthquake RS 5");
         ArgumentCaptor<WeatherAccuweather> captor = ArgumentCaptor.forClass(WeatherAccuweather.class);
         verify(databaseConnector, times(1)).saveWeatherData(captor.capture());
         WeatherAccuweather savedWeather = captor.getValue();
-        assertEquals("United States of America", savedWeather.getCountryName());
-        assertEquals("New York", savedWeather.getRegionName());
-        assertEquals("New York", savedWeather.getCityName());
-        assertEquals(40.7128, savedWeather.getLatitude(), 0.001);
-        assertEquals(-74.006, savedWeather.getLongitude(), 0.001);
-        assertEquals("Hurricane", savedWeather.getNaturalDisaster());
-
+        assertEquals("Thu Feb 08 00:00:00 EET 2024", savedWeather.getDate().toString());
+        assertEquals("8.06", savedWeather.getTemperature().toString());
+        assertEquals("38", savedWeather.getHumidity().toString());
+        assertEquals("Earthquake", savedWeather.getNaturalDisaster());
+        assertEquals("Earthquake RS 5", savedWeather.getDescription());
+        assertEquals("E (101°)", savedWeather.getWindDirection());
+        assertEquals(4.6, savedWeather.getWindSpeed());
 
     }
 

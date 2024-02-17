@@ -1,9 +1,11 @@
 package com.retrievedata;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import com.entities.WeatherOpenweather;
+import com.entities.WeatherWeatherstack;
 import com.handlers.APIConnection;
 import com.handlers.DatabaseConnector;
 import org.json.JSONObject;
@@ -11,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.Mock;
 
@@ -50,20 +53,18 @@ public class OpenweatherDataRetrievalTest {
 
         dataRetrieval.downloadAndSetWeatherData("New York", "Earthquake", "Earthquake RS 5");
 
-         WeatherOpenweather weatherOpenweather = new WeatherOpenweather();
-         weatherOpenweather.setCityName("New York");
-         weatherOpenweather.setCountryName("US");
-         weatherOpenweather.setLatitude(40.7128);
-         weatherOpenweather.setLongitude(-74.0060);
-         weatherOpenweather.setDescription("Earthquake RS 5");
+         ArgumentCaptor<WeatherOpenweather> captor = ArgumentCaptor.forClass(WeatherOpenweather.class);
+         verify(databaseConnector, times(1)).saveWeatherData(captor.capture());
 
-//         verify(databaseConnector).saveWeatherData(argThat(dataEntity ->
-//                 Objects.equals(dataEntity.getCityName(), weatherOpenweather.getCityName()) &&
-//                         Objects.equals(dataEntity.getCountryName(), weatherOpenweather.getCountryName()) &&
-//                         Objects.equals(dataEntity.getLatitude(), weatherOpenweather.getLatitude()) &&
-//                         Objects.equals(dataEntity.getLongitude(), weatherOpenweather.getLongitude()) &&
-//                         Objects.equals(dataEntity.getDescription(), weatherOpenweather.getDescription())
-//         ));
+         // Assert on the saved WeatherWeatherstack object
+         WeatherOpenweather savedWeather = captor.getValue();
+         assertEquals("US", savedWeather.getCountryName());
+         assertEquals("New York", savedWeather.getCityName());
+         assertEquals(40.7128, savedWeather.getLatitude());
+         assertEquals(-74.006, savedWeather.getLongitude());
+         assertEquals("Earthquake", savedWeather.getNaturalDisaster());
+         assertEquals("Earthquake RS 5",savedWeather.getDescription());
+
     }
     @Test(expected = NullPointerException.class)
     public void testDownloadAndSetWeatherData_NullCityName() {
